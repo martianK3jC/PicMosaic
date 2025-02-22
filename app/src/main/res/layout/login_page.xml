@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".LoginActivity"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+        <!-- wavy header -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/wavyheader"
+            android:scaleType="fitXY"
+            />
+
+        <!-- app logo -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:src="@drawable/app_logo" />
+
+        <!-- Welcome Back -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Welcome Back!"
+            android:textColor="@color/primary"
+            android:textSize="30sp" />
+
+        <!-- Login -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Login"
+            android:textSize="20sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="30dp"
+            >
+                <!-- Email Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    style="@style/CustomTextInputLayout"
+                    >
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/emailEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:textEditPasteWindowLayout="@color/primary_light"
+                            android:autofillHints="emailAddress"
+                            android:importantForAutofill="yes"
+                            style="@style/CustomTextInputLayout"
+                            />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!-- Password Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="@color/secondary"
+                    style="@style/CustomTextInputLayout">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/passwordEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:autofillHints="password"
+                            android:importantForAutofill="yes"
+                            style="@style/CustomTextInputLayout"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--Forgot Password?-->
+                <TextView
+                    android:id="@+id/forgotPasswordText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Forgot Password?"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+
+                <!-- Login Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/loginButton"
+                    android:fontFamily="@font/poppins_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="90dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Login"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="@color/primary"/>
+
+                <!-- Policy -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                        <!-- First line (Terms & Conditions) -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            >
+                                <TextView
+                                    android:id="@+id/tvTermsText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="By continuing you are agreeing to our "
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tvTermsLink"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:text="terms &amp; conditions"
+                                    android:textColor="#4DB6AC"
+                                    android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <!-- Second line (Privacy Policies) -->
+                        <TextView
+                            android:id="@+id/tvPrivacyText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="and our privacy policies"
+                            android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/gray_line"
+                                    android:scaleType="fitCenter"/>
+
+                                <!-- Don't Have an Account? -->
+                                <TextView
+                                    android:id="@+id/tvNoAccount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/text_secondary_dark"
+                                    android:text=" Don't Have an Account? "
+                                    android:textSize="14sp"
+                                    android:focusable="true"
+                                    android:fontFamily="@font/poppins_regular" />
+
+                                <ImageView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/gray_line"
+                                    android:scaleType="fitCenter"/>
+                        </LinearLayout>
+
+
+                </LinearLayout>
+
+
+                <!-- Signup Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/signupButton"
+                    android:layout_width="95dp"
+                    android:layout_height="50dp"
+                    android:text="Signup"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/primary"
+                    app:cornerRadius="10dp"
+                    />
+
+        </LinearLayout>
+        </LinearLayout>
+</ScrollView>
+</LinearLayout>
