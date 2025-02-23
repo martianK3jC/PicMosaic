@@ -132,21 +132,26 @@ class ProfileActivity : Activity() {
 
     //Load the saved profile image
     private fun loadSavedProfileImage() {
-        val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-        val savedImagePath = sharedPreferences.getString("profile_image_path", null)
+        val savedImagePath = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+            .getString("profile_image_path", null) ?: return println("❌ No saved profile image path in SharedPreferences")
 
-        if (!savedImagePath.isNullOrEmpty()) {
-            val file = File(savedImagePath)
-            if (file.exists()) {
-                val bitmap = BitmapFactory.decodeFile(savedImagePath)
-                val resizedBitmap = resizeBitmap(bitmap, 300)
-                profileImage.setImageBitmap(resizedBitmap)
-                profileImageEdit.setImageBitmap(resizedBitmap)
-            } else {
-                Toast.makeText(this, "Saved profile image not found", Toast.LENGTH_SHORT).show()
-            }
+        val file = File(savedImagePath)
+        if (!file.exists()) {
+            println("❌ Saved profile image not found at: $savedImagePath")
+            return showToast("Saved profile image not found")
+        }
+
+        BitmapFactory.decodeFile(savedImagePath)?.let { bitmap ->
+            println("✅ Successfully loaded profile image from: $savedImagePath")
+            profileImage.setImageBitmap(bitmap)
+            profileImageEdit.setImageBitmap(bitmap)
+        } ?: showToast("Error: Profile image is invalid").also {
+            println("❌ Failed to decode saved image. File might be corrupted.")
         }
     }
+
+
+
 
     private fun resizeBitmap(bitmap: Bitmap, maxSize: Int): Bitmap {
         val width = bitmap.width
@@ -177,7 +182,6 @@ class ProfileActivity : Activity() {
                 profileEmail.text = it.email
                 profileCity.text = it.city
 
-                // ✅ Update Edit Views
                 profileUsernameEdit.text = it.username
                 firstNameEdit.setText(it.firstName)
                 lastNameEdit.setText(it.lastName)
@@ -196,35 +200,18 @@ class ProfileActivity : Activity() {
     // Save Profile Changes
     private fun saveProfileChanges() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-        val email = sharedPreferences.getString("current_user_email", null)
-
-        if (email == null) {
-            Toast.makeText(this, "Error: No user logged in", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
 
         val editor = sharedPreferences.edit()
 
-        if (selectedImageUri != null) {
-            val savedPath = copyImageToInternalStorage(selectedImageUri!!)
-            editor.putString("profile_image_path", savedPath)
-
-            val bitmap = BitmapFactory.decodeFile(savedPath)
-
-            //Update both Profile and Edit Profile Images
-            profileImage.setImageBitmap(bitmap)
-            profileImageEdit.setImageBitmap(bitmap)
-        }
-
-        if (selectedImageUri == null && capturedPhoto != null) {
-            val savedUri = saveBitmapToInternalStorage(capturedPhoto!!)
-            editor.putString("profile_image_path", savedUri)
-
-            val bitmap = BitmapFactory.decodeFile(savedUri)
-
-            // ✅ Update both Profile and Edit Profile Images
-            profileImage.setImageBitmap(bitmap)       // Updates Profile Page Image ✅
-            profileImageEdit.setImageBitmap(bitmap)   // Updates Edit Page Image ✅
+        selectedImageUri?.let { uri ->
+            copyImageToInternalStorage(uri)?.let { savedPath ->
+                editor.putString("profile_image_path", savedPath)
+                BitmapFactory.decodeFile(savedPath)?.let { bitmap ->
+                    profileImage.setImageBitmap(bitmap)
+                    profileImageEdit.setImageBitmap(bitmap)
+                }
+            }
         }
 
         val updatedProfile = UserProfile(
@@ -237,58 +224,51 @@ class ProfileActivity : Activity() {
             city = cityEdit.text.toString()
         )
 
-        editor.putString("first_name", updatedProfile.firstName)
-        editor.putString("last_name", updatedProfile.lastName)
-        editor.putString("phone", updatedProfile.phone)
-        editor.putString("address", updatedProfile.address)
-        editor.putString("city", updatedProfile.city)
-        editor.apply()
+        with(editor) {
+            putString("first_name", updatedProfile.firstName)
+            putString("last_name", updatedProfile.lastName)
+            putString("phone", updatedProfile.phone)
+            putString("address", updatedProfile.address)
+            putString("city", updatedProfile.city)
+            apply()
+        }
 
         DummyUserData.updateUserProfile(email, updatedProfile)
 
-        loadProfileData()  // ✅ Reloads Profile Information
+        loadProfileData()
         loadSavedProfileImage()
         viewFlipper.showPrevious()
-        Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+        showToast("Profile updated successfully")
+    }
+
+    // Helper function for showing a toast
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
 
-    private fun copyImageToInternalStorage(uri: Uri): String {
-        val inputStream = contentResolver.openInputStream(uri)
-        val file = File(filesDir, "profile_image.jpg")
-        val outputStream = FileOutputStream(file)
 
-        inputStream?.copyTo(outputStream)
-        inputStream?.close()
-        outputStream.close()
+    private fun copyImageToInternalStorage(uri: Uri): String? {
+        return try {
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                val bitmap = BitmapFactory.decodeStream(inputStream) ?: return null
+                val file = File(filesDir, "profile_image.jpg")
 
-        return file.absolutePath
-    }
+                FileOutputStream(file).use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                }
 
-
-    //Save camera pic to storage
-    private fun saveBitmapToInternalStorage(bitmap: Bitmap): String {
-        // Compress image if it's too large (max 1024x1024)
-        val maxSize = 1024
-        var compressedBitmap = bitmap
-        if (bitmap.width > maxSize || bitmap.height > maxSize) {
-            val scale = minOf(maxSize.toFloat() / bitmap.width, maxSize.toFloat() / bitmap.height)
-            val matrix = Matrix()
-            matrix.postScale(scale, scale)
-            compressedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-        }
-
-        val fileName = "profile_image.jpg"
-        try {
-            openFileOutput(fileName, Context.MODE_PRIVATE).use { stream ->
-                compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+                file.absolutePath
             }
         } catch (e: Exception) {
-            Toast.makeText(this, "Failed to save image: ${e.message}", Toast.LENGTH_SHORT).show()
-            return ""
+            e.printStackTrace()
+            null
         }
-        return fileName
     }
+
+
+
+
 
     // Only allow choosing from the gallery
     private fun showImagePickerDialog() {
@@ -298,8 +278,8 @@ class ProfileActivity : Activity() {
 
     //Show Discard Changes Dialog box
     private fun showDiscardChangesDialog() {
-        val builder = AlertDialog.Builder(this, R.style.CustomAlertDialog)
-            builder.setTitle("Discard Changes")
+        AlertDialog.Builder(this, R.style.CustomAlertDialog)
+            .setTitle("Discard Changes")
             .setMessage("Are you sure you want to discard your changes?")
             .setPositiveButton("Yes") { _, _ ->
                 viewFlipper.showPrevious()
@@ -310,8 +290,8 @@ class ProfileActivity : Activity() {
 
     //Show Save Changes Dialog box
     private fun showSaveChangesDialog() {
-        val builder = AlertDialog.Builder(this, R.style.CustomAlertDialog)
-            builder.setTitle("Save Changes?")
+        AlertDialog.Builder(this, R.style.CustomAlertDialog)
+            .setTitle("Save Changes?")
             .setMessage("Are you sure you want to save the changes?")
             .setPositiveButton("Yes") { _, _ -> saveProfileChanges() }
             .setNegativeButton("No"){ dialog, _ -> dialog.dismiss() }
@@ -343,34 +323,32 @@ class ProfileActivity : Activity() {
         startActivityForResult(intent,PICK_IMAGE_REQUEST)
     }
 
-    //Open Camera
-    private fun openCamera() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-        // Check if a camera app exists before starting the activity
-        if (cameraIntent.resolveActivity(packageManager) != null) {
-            startActivityForResult(cameraIntent, CAMERA_REQUEST)
-        } else {
-            Toast.makeText(this, "No camera app found!", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-
     //THIS IS HANDLING THE IMAGE SELECTION
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == PICK_IMAGE_REQUEST) {
-            val imageUri = data?.data
-            if (imageUri != null) {
-                profileImageEdit.setImageURI(imageUri)
-                selectedImageUri = imageUri
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            val imageUri = data?.data ?: return  // If no image is selected, exit early
 
-                val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-                sharedPreferences.edit()
-                    .putString("profile_image_path", imageUri.toString()).apply()
+            val savedPath = copyImageToInternalStorage(imageUri) ?: run {
+                Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Check if file exists before setting the image
+            val file = File(savedPath)
+            if (file.exists()) {
+                profileImageEdit.setImageBitmap(BitmapFactory.decodeFile(savedPath))
+                selectedImageUri = Uri.fromFile(file)
+
+                getSharedPreferences("PicMosaic", MODE_PRIVATE)
+                    .edit()
+                    .putString("profile_image_path", savedPath)
+                    .apply()
+            } else {
+                Toast.makeText(this, "Error: Image file missing", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
+
 }
