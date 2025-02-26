@@ -7,6 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.android.picmosaic.utils.isRegistered
+import com.android.picmosaic.utils.isValidEntry
+import com.android.picmosaic.utils.toast
 
 class LoginActivity : Activity() {
     private lateinit var emailEditText: EditText
@@ -14,7 +17,7 @@ class LoginActivity : Activity() {
     private lateinit var forgotPasswordText: TextView
     private lateinit var loginButton: Button
     private lateinit var signupButton: Button
-
+    var isGoodtoLogin = false;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_page)
@@ -22,20 +25,39 @@ class LoginActivity : Activity() {
         initializeViews()
         checkLoginStatus()
 
+        intent?.let{
+            it.getBooleanExtra("isValidRegistered", true).let{
+                isValidRegistered -> isGoodtoLogin
+            }
+            it.getStringExtra("email")?.let{
+                email -> emailEditText.setText(email)
+            }
+            it.getStringExtra("password")?.let{
+                password -> passwordEditText.setText(password)
+            }
+        }
+
         // 🔹 Handle login button click
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            if (email.isBlank() || password.isBlank()) {
-                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
+            if(emailEditText.isValidEntry()){
+                this.toast("Please enter email and password")
                 return@setOnClickListener
+            }else if(passwordEditText.isValidEntry()){
+                this.toast("Please enter password")
             }
 
-            if (!DummyUserData.validateCredentials(email, password)) {
-                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            if(isGoodtoLogin){
+                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
+                navigateToHome()
             }
+
+//            if (!DummyUserData.validateCredentials(email, password)) {
+//                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
 
             // 🔹 Save login state
             saveLoginData(email)

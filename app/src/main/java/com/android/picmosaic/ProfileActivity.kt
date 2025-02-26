@@ -16,6 +16,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewFlipper
+import com.android.picmosaic.utils.isRegistered
+import com.android.picmosaic.utils.txt
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.io.FileOutputStream
@@ -57,10 +59,10 @@ class ProfileActivity : Activity() {
     private lateinit var cityEdit: EditText
 
     private var selectedImageUri: Uri? = null
-    private var capturedPhoto: Bitmap? = null
 
 //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
-    override fun onCreate(savedInstanceState: Bundle?) {
+        override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile_page_with_edit)
         //load saved image
@@ -132,12 +134,38 @@ class ProfileActivity : Activity() {
 
     //Load the saved profile image
     private fun loadSavedProfileImage() {
+
+        intent?.let{
+            it.getStringExtra("firstname")?.let{
+                    firstname -> profileUsername.setText(firstname)
+            }
+            it.getStringExtra("lastname")?.let{
+                    lastname -> profileLastName.setText(lastname)
+            }
+
+            it.getStringExtra("phonenumber")?.let{
+                    phonenumber -> profilePhone.setText(phonenumber)
+            }
+
+            it.getStringExtra("address")?.let {
+                    address -> profileAddress.setText(address)
+            }
+
+            it.getStringExtra("city")?.let {
+                    address -> profileCity.setText(address)
+            }
+
+            it.getStringExtra("email")?.let{
+                    email -> profileEmail.setText(email)
+            }
+        }
+
         val savedImagePath = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-            .getString("profile_image_path", null) ?: return println("❌ No saved profile image path in SharedPreferences")
+            .getString("profile_image_path", null) ?: return println("No saved profile image path in SharedPreferences")
 
         val file = File(savedImagePath)
         if (!file.exists()) {
-            println("❌ Saved profile image not found at: $savedImagePath")
+            println("Saved profile image not found at: $savedImagePath")
             return showToast("Saved profile image not found")
         }
 
@@ -146,7 +174,7 @@ class ProfileActivity : Activity() {
             profileImage.setImageBitmap(bitmap)
             profileImageEdit.setImageBitmap(bitmap)
         } ?: showToast("Error: Profile image is invalid").also {
-            println("❌ Failed to decode saved image. File might be corrupted.")
+            println("Failed to decode saved image. File might be corrupted.")
         }
     }
 
@@ -174,7 +202,7 @@ class ProfileActivity : Activity() {
 
         if(email != null){
             DummyUserData.getUserProfile(email)?.let{
-                profileUsername.text = it.username
+                profileUsername.text = it.firstName
                 profileFirstName.text = it.firstName
                 profileLastName.text = it.lastName
                 profilePhone.text = it.phone
@@ -182,7 +210,7 @@ class ProfileActivity : Activity() {
                 profileEmail.text = it.email
                 profileCity.text = it.city
 
-                profileUsernameEdit.text = it.username
+                profileUsernameEdit.text = it.firstName
                 firstNameEdit.setText(it.firstName)
                 lastNameEdit.setText(it.lastName)
                 phoneEdit.setText(it.phone)
@@ -225,6 +253,7 @@ class ProfileActivity : Activity() {
         )
 
         with(editor) {
+            putString("username", updatedProfile.username)
             putString("first_name", updatedProfile.firstName)
             putString("last_name", updatedProfile.lastName)
             putString("phone", updatedProfile.phone)
