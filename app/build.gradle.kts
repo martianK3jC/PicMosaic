@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.android.picmosaic"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.android.picmosaic"

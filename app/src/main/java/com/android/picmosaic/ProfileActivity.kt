@@ -117,7 +117,9 @@ class ProfileActivity : Activity() {
             showSaveChangesDialog()
         }
         // Back Button in Profile - Navigate to Home
-        arrowBackButton.setOnClickListener {navigateToHomePage()}
+        arrowBackButton.setOnClickListener {
+            navigateToHomePage()
+        }
         // Back Button - Switch to Profile View
         arrowBackEditButton.setOnClickListener {
             showDiscardChangesDialog()
@@ -134,113 +136,59 @@ class ProfileActivity : Activity() {
 
     //Load the saved profile image
     private fun loadSavedProfileImage() {
+        val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+        val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
 
-        intent?.let{
-            it.getStringExtra("firstname")?.let{
-                    firstname -> profileUsername.setText(firstname)
-            }
-            it.getStringExtra("lastname")?.let{
-                    lastname -> profileLastName.setText(lastname)
-            }
+        val savedImagePath = sharedPreferences.getString("profile_image_path_$email", null)
 
-            it.getStringExtra("phonenumber")?.let{
-                    phonenumber -> profilePhone.setText(phonenumber)
-            }
-
-            it.getStringExtra("address")?.let {
-                    address -> profileAddress.setText(address)
-            }
-
-            it.getStringExtra("city")?.let {
-                    address -> profileCity.setText(address)
-            }
-
-            it.getStringExtra("email")?.let{
-                    email -> profileEmail.setText(email)
-            }
+        if (savedImagePath.isNullOrEmpty()) {
+            showToast("No saved profile image found for $email")
+            return
         }
-
-        val savedImagePath = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-            .getString("profile_image_path", null) ?: return println("No saved profile image path in SharedPreferences")
 
         val file = File(savedImagePath)
         if (!file.exists()) {
-            println("Saved profile image not found at: $savedImagePath")
-            return showToast("Saved profile image not found")
+            showToast("Saved profile image not found")
+            return
         }
 
         BitmapFactory.decodeFile(savedImagePath)?.let { bitmap ->
-            println("✅ Successfully loaded profile image from: $savedImagePath")
             profileImage.setImageBitmap(bitmap)
             profileImageEdit.setImageBitmap(bitmap)
-        } ?: showToast("Error: Profile image is invalid").also {
-            println("Failed to decode saved image. File might be corrupted.")
-        }
+        } ?: showToast("Error: Profile image is invalid")
     }
 
 
-
-
-    private fun resizeBitmap(bitmap: Bitmap, maxSize: Int): Bitmap {
-        val width = bitmap.width
-        val height = bitmap.height
-
-        // Calculate aspect ratio
-        val scaleFactor = minOf(maxSize.toFloat() / width, maxSize.toFloat() / height)
-
-        val newWidth = (width * scaleFactor).toInt()
-        val newHeight = (height * scaleFactor).toInt()
-
-        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
-    }
 
 
     //Load the user profile data
     private fun loadProfileData() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-        val email = sharedPreferences.getString("current_user_email", null)
+        val email = sharedPreferences.getString("current_user_email", null) ?: return
 
-        if(email != null){
-            DummyUserData.getUserProfile(email)?.let{
-                profileUsername.text = it.firstName
-                profileFirstName.text = it.firstName
-                profileLastName.text = it.lastName
-                profilePhone.text = it.phone
-                profileAddress.text = it.address
-                profileEmail.text = it.email
-                profileCity.text = it.city
+        val profile = DummyUserData.getUserProfile(email, this) ?: return
 
-                profileUsernameEdit.text = it.firstName
-                firstNameEdit.setText(it.firstName)
-                lastNameEdit.setText(it.lastName)
-                phoneEdit.setText(it.phone)
-                addressEdit.setText(it.address)
-                profileEmailEdit.hint = it.email
-                cityEdit.setText(it.city)
-            }
-        }else{
-            Toast.makeText(this,"Error: No user logged in", Toast.LENGTH_SHORT).show()
-            finish()
-        }
+        profileUsername.text = profile.firstName
+        profileFirstName.text = profile.firstName
+        profileLastName.text = profile.lastName
+        profilePhone.text = profile.phone
+        profileAddress.text = profile.address
+        profileEmail.text = profile.email
+        profileCity.text = profile.city
 
+        profileUsernameEdit.text = profile.firstName
+        firstNameEdit.setText(profile.firstName)
+        lastNameEdit.setText(profile.lastName)
+        phoneEdit.setText(profile.phone)
+        addressEdit.setText(profile.address)
+        profileEmailEdit.hint = profile.email
+        cityEdit.setText(profile.city)
     }
 
     // Save Profile Changes
     private fun saveProfileChanges() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
-
-        val editor = sharedPreferences.edit()
-
-        selectedImageUri?.let { uri ->
-            copyImageToInternalStorage(uri)?.let { savedPath ->
-                editor.putString("profile_image_path", savedPath)
-                BitmapFactory.decodeFile(savedPath)?.let { bitmap ->
-                    profileImage.setImageBitmap(bitmap)
-                    profileImageEdit.setImageBitmap(bitmap)
-                }
-            }
-        }
 
         val updatedProfile = UserProfile(
             email = email,
@@ -252,23 +200,19 @@ class ProfileActivity : Activity() {
             city = cityEdit.text.toString()
         )
 
-        with(editor) {
-            putString("username", updatedProfile.username)
-            putString("first_name", updatedProfile.firstName)
-            putString("last_name", updatedProfile.lastName)
-            putString("phone", updatedProfile.phone)
-            putString("address", updatedProfile.address)
-            putString("city", updatedProfile.city)
-            apply()
-        }
+        // ✅ Save to SharedPreferences
+        DummyUserData.updateUserProfile(email, updatedProfile, this)
 
-        DummyUserData.updateUserProfile(email, updatedProfile)
-
+        // ✅ Reload the saved profile
         loadProfileData()
         loadSavedProfileImage()
-        viewFlipper.showPrevious()
+        // ✅ Switch back to the profile view
+        viewFlipper.showPrevious()  // 🔹 This moves back to the non-editing state
+
         showToast("Profile updated successfully")
     }
+
+
 
     // Helper function for showing a toast
     private fun showToast(message: String) {
@@ -277,24 +221,23 @@ class ProfileActivity : Activity() {
 
 
 
-    private fun copyImageToInternalStorage(uri: Uri): String? {
+    private fun copyImageToInternalStorage(uri: Uri, email: String): String? {
         return try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 val bitmap = BitmapFactory.decodeStream(inputStream) ?: return null
-                val file = File(filesDir, "profile_image.jpg")
+                val file = File(filesDir, "profile_image_$email.jpg") // 🔹 Unique filename per user
 
                 FileOutputStream(file).use { outputStream ->
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
                 }
 
-                file.absolutePath
+                file.absolutePath // Return saved file path
             }
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
     }
-
 
 
 
@@ -352,15 +295,18 @@ class ProfileActivity : Activity() {
         startActivityForResult(intent,PICK_IMAGE_REQUEST)
     }
 
-    //THIS IS HANDLING THE IMAGE SELECTION
+    // THIS HANDLES IMAGE SELECTION
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             val imageUri = data?.data ?: return  // If no image is selected, exit early
 
-            val savedPath = copyImageToInternalStorage(imageUri) ?: run {
-                Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show()
+            val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+            val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
+
+            val savedPath = copyImageToInternalStorage(imageUri, email) ?: run {
+                showToast("Failed to save image")
                 return
             }
 
@@ -370,14 +316,34 @@ class ProfileActivity : Activity() {
                 profileImageEdit.setImageBitmap(BitmapFactory.decodeFile(savedPath))
                 selectedImageUri = Uri.fromFile(file)
 
-                getSharedPreferences("PicMosaic", MODE_PRIVATE)
-                    .edit()
-                    .putString("profile_image_path", savedPath)
+                // ✅ Save the image path specific to the logged-in user
+                sharedPreferences.edit()
+                    .putString("profile_image_path_$email", savedPath) // Unique key per user
                     .apply()
             } else {
-                Toast.makeText(this, "Error: Image file missing", Toast.LENGTH_SHORT).show()
+                showToast("Error: Image file missing")
             }
         }
     }
+
+    fun handleLogout() {
+        val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+
+        // Clear login session
+        sharedPreferences.edit().remove("current_user_email").apply()
+
+        // 🔹 Clear cached profile images
+        profileImage.setImageDrawable(null)
+        profileImageEdit.setImageDrawable(null)
+
+        // 🔹 Go back to login screen
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+
+        finish() // Close ProfileActivity
+    }
+
+
 
 }

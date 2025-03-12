@@ -11,7 +11,7 @@ class DummyHomeActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dummy_home_page)
-
+        checkLoginStatus()
         val settingsButton = findViewById<Button>(R.id.settingsButton)
 
         Toast.makeText(this, "Welcome to the Home Page!", Toast.LENGTH_SHORT).show()

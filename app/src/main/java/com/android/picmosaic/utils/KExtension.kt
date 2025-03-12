@@ -8,7 +8,7 @@ fun EditText.txt(): String{
     return this.text.toString()
 }
 
-fun EditText.isValidEntry(): Boolean{
+fun EditText.isNotValid(): Boolean{
     return this.text.toString().isNullOrEmpty()
 }
 

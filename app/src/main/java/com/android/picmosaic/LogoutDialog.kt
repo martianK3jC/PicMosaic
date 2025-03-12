@@ -27,20 +27,10 @@ class LogoutDialog(private val activity: Activity) : Dialog(activity) {
 
         //Click the "YES" button
         yesButton.setOnClickListener {
-            val sharedPref = activity.getSharedPreferences("PicMosaic", Context.MODE_PRIVATE)
-            val profileImagePath = sharedPref.getString("profile_image_path", null) // Keep image
-
-            // Clear everything except profile image
-            sharedPref.edit().clear().apply()
-
-            // Restore profile image path
-            sharedPref.edit().putString("profile_image_path", profileImagePath).apply()
-
-            val intent = Intent(context, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            context.startActivity(intent)
-            dismiss()
-            activity.finish()
+            (activity as? ProfileActivity)?.handleLogout() // Call the function from ProfileActivity
+            dismiss() // Close dialog
         }
+
+
     }
 }

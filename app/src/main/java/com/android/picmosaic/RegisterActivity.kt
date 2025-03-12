@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.android.picmosaic.utils.isRegistered
-import com.android.picmosaic.utils.isValidEntry
+import com.android.picmosaic.utils.isNotValid
 import com.android.picmosaic.utils.showError
 import com.android.picmosaic.utils.showSuccess
 import com.android.picmosaic.utils.txt
@@ -21,6 +21,7 @@ class RegisterActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register)
+
         fun navigateToLogin() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
@@ -29,7 +30,7 @@ class RegisterActivity : Activity() {
         val registerLastNameEditText = findViewById<EditText>(R.id.registerLastnameEditText)
         val registerAddressEditText = findViewById<EditText>(R.id.registerAddressEditText)
         val registerPhoneNumberEditText = findViewById<EditText>(R.id.registerPhoneNumberEditText)
-        val registerCityEditText = findViewById<EditText>(R.id.registerAddressEditText)
+        val registerCityEditText = findViewById<EditText>(R.id.registerCityText)
         val registerButton = findViewById<Button>(R.id.registerButton)
         val registerPageLoginButton = findViewById<Button>(R.id.registerPageLoginButton)
         val registerEmailEditText = findViewById<EditText>(R.id.registerEmailEditText)
@@ -43,7 +44,13 @@ class RegisterActivity : Activity() {
         }
 
         registerButton.setOnClickListener {
-            if(registerFirstNameEditText.isValidEntry() || registerLastNameEditText.isValidEntry() || registerAddressEditText.isValidEntry()||registerPhoneNumberEditText.isValidEntry() || registerCityEditText.isValidEntry() || registerEmailEditText.isValidEntry()||registerPasswordEditText.isValidEntry()){
+            if(registerFirstNameEditText.isNotValid()
+                || registerLastNameEditText.isNotValid()
+                || registerAddressEditText.isNotValid()
+                ||registerPhoneNumberEditText.isNotValid()
+                || registerCityEditText.isNotValid()
+                || registerEmailEditText.isNotValid()
+                ||registerPasswordEditText.isNotValid()){
                 showError("Please fill out the forms")
             }
             when {
@@ -78,6 +85,4 @@ class RegisterActivity : Activity() {
 
         }
     }
-
-    companion object
 }
