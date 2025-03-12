@@ -8,8 +8,9 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.android.picmosaic.utils.isRegistered
-import com.android.picmosaic.utils.isValidEntry
+import com.android.picmosaic.utils.isNotValid
 import com.android.picmosaic.utils.toast
+import com.android.picmosaic.utils.txt
 
 class LoginActivity : Activity() {
     private lateinit var emailEditText: EditText
@@ -39,14 +40,12 @@ class LoginActivity : Activity() {
 
         // 🔹 Handle login button click
         loginButton.setOnClickListener {
-            val email = emailEditText.text.toString().trim()
-            val password = passwordEditText.text.toString().trim()
+            val email = emailEditText.txt()
+            val password = passwordEditText.txt()
 
-            if(emailEditText.isValidEntry()){
-                this.toast("Please enter email and password")
+            if(emailEditText.isNotValid() || passwordEditText.isNotValid()){
+                this.toast("Please fill out the forms completely")
                 return@setOnClickListener
-            }else if(passwordEditText.isValidEntry()){
-                this.toast("Please enter password")
             }
 
             if(isGoodtoLogin){
@@ -54,10 +53,10 @@ class LoginActivity : Activity() {
                 navigateToHome()
             }
 
-//            if (!DummyUserData.validateCredentials(email, password)) {
-//                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
+            if (!DummyUserData.validateCredentials(email, password)) {
+                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             // 🔹 Save login state
             saveLoginData(email)
