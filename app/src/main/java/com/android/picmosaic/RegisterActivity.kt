@@ -62,11 +62,9 @@ class RegisterActivity : Activity() {
                 return@setOnClickListener
             }
 
-            // 🔹 SAVE NEW USER TO DATABASE (DummyUserData)
             val newUser = UserProfile(email, firstName, firstName, lastName, phoneNumber, address, city)
             DummyUserData.addNewUser(email, password, newUser, this)
 
-            // 🔹 SAVE TO SHARED PREFERENCES (So login persists)
             val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
             sharedPreferences.edit()
                 .putString("registered_email", email)
