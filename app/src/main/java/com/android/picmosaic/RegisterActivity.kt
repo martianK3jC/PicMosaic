@@ -1,88 +1,80 @@
 package com.android.picmosaic
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import com.android.picmosaic.utils.isRegistered
-import com.android.picmosaic.utils.isNotValid
 import com.android.picmosaic.utils.showError
 import com.android.picmosaic.utils.showSuccess
 import com.android.picmosaic.utils.txt
 
 class RegisterActivity : Activity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register)
 
         fun navigateToLogin() {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
-        val registerFirstNameEditText = findViewById<EditText>(R.id.registerFirstNameEditText)
-        val registerLastNameEditText = findViewById<EditText>(R.id.registerLastnameEditText)
-        val registerAddressEditText = findViewById<EditText>(R.id.registerAddressEditText)
-        val registerPhoneNumberEditText = findViewById<EditText>(R.id.registerPhoneNumberEditText)
-        val registerCityEditText = findViewById<EditText>(R.id.registerCityText)
+        val registerFirstName = findViewById<EditText>(R.id.registerFirstNameEditText)
+        val registerLastName = findViewById<EditText>(R.id.registerLastnameEditText)
+        val registerAddress = findViewById<EditText>(R.id.registerAddressEditText)
+        val registerPhoneNumber = findViewById<EditText>(R.id.registerPhoneNumberEditText)
+        val registerCity = findViewById<EditText>(R.id.registerCityText)
+        val registerEmail = findViewById<EditText>(R.id.registerEmailEditText)
+        val registerPassword = findViewById<EditText>(R.id.registerPasswordEditText)
+        val confirmPassword = findViewById<EditText>(R.id.confirmPasswordEditText)
         val registerButton = findViewById<Button>(R.id.registerButton)
         val registerPageLoginButton = findViewById<Button>(R.id.registerPageLoginButton)
-        val registerEmailEditText = findViewById<EditText>(R.id.registerEmailEditText)
-        val registerPasswordEditText = findViewById<EditText>(R.id.registerPasswordEditText)
-        val confirmPasswordEditText = findViewById<EditText>(R.id.confirmPasswordEditText)
-        var check = false;
 
-
-        registerPageLoginButton.setOnClickListener {
-            navigateToLogin()
-        }
+        registerPageLoginButton.setOnClickListener { navigateToLogin() }
 
         registerButton.setOnClickListener {
-            if(registerFirstNameEditText.isNotValid()
-                || registerLastNameEditText.isNotValid()
-                || registerAddressEditText.isNotValid()
-                ||registerPhoneNumberEditText.isNotValid()
-                || registerCityEditText.isNotValid()
-                || registerEmailEditText.isNotValid()
-                ||registerPasswordEditText.isNotValid()){
-                showError("Please fill out the forms")
+            val firstName = registerFirstName.txt()
+            val lastName = registerLastName.txt()
+            val address = registerAddress.txt()
+            val phoneNumber = registerPhoneNumber.txt()
+            val city = registerCity.txt()
+            val email = registerEmail.txt()
+            val password = registerPassword.txt()
+            val confirmPass = confirmPassword.txt()
+
+            // 🔹 VALIDATION
+            if (firstName.isEmpty() || lastName.isEmpty() || address.isEmpty() ||
+                phoneNumber.isEmpty() || city.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                showError("Please fill out all fields")
+                return@setOnClickListener
             }
-            when {
-                !Patterns.EMAIL_ADDRESS.matcher(registerEmailEditText.text.toString()).matches() -> {
-                    showError("Please enter a valid email address")
-                }
-
-                registerPasswordEditText.text.toString().length < 6 -> {
-                    showError("Password must be at least 6 characters")
-                }
-
-                registerPasswordEditText.text.toString() != confirmPasswordEditText.text.toString() -> {
-                    showError("Passwords do not match")
-                }
-
-                else -> {
-                    showSuccess("Registration successful!")
-                    check = true;
-                    startActivity(Intent(this, LoginActivity::class.java).apply {
-                        putExtra("firstname", registerFirstNameEditText.txt())
-                        putExtra("lastname", registerLastNameEditText.txt())
-                        putExtra("address", registerAddressEditText.txt())
-                        putExtra("phonenumber", registerPhoneNumberEditText.txt())
-                        putExtra("city", registerCityEditText.txt())
-                        putExtra("username", registerFirstNameEditText.txt())
-                        putExtra("email", registerEmailEditText.txt())
-                        putExtra("password", registerPasswordEditText.txt())
-                        putExtra("isValidRegistered", isRegistered(check))
-                    })
-                }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                showError("Invalid email format")
+                return@setOnClickListener
+            }
+            if (password.length < 6) {
+                showError("Password must be at least 6 characters")
+                return@setOnClickListener
+            }
+            if (password != confirmPass) {
+                showError("Passwords do not match")
+                return@setOnClickListener
             }
 
+            // 🔹 SAVE NEW USER TO DATABASE (DummyUserData)
+            val newUser = UserProfile(email, firstName, firstName, lastName, phoneNumber, address, city)
+            DummyUserData.addNewUser(email, password, newUser, this)
+
+            // 🔹 SAVE TO SHARED PREFERENCES (So login persists)
+            val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+            sharedPreferences.edit()
+                .putString("registered_email", email)
+                .putString("registered_password", password)
+                .apply()
+
+            showSuccess("Registration successful!")
+            navigateToLogin()
         }
     }
 }

@@ -11,33 +11,54 @@ data class UserProfile(
     val address: String,
     val city: String
 )
-
 object DummyUserData {
-    private val userCredentials = mutableMapOf(
-        "test@email.com" to "password123",
-        "john@email.com" to "john123",
-        "jane@email.com" to "jane123",
-        "keshample@email.com" to "keshample"
-    )
+    private val userCredentials = mutableMapOf<String, String>()
+    private val userProfiles = mutableMapOf<String, UserProfile>()
 
-    private val userProfiles = mutableMapOf(
-        "test@email.com" to UserProfile("test@email.com", "testuser", "Test", "User", "123-456-7890", "123 Test St", "Test City"),
-        "john@email.com" to UserProfile("john@email.com", "johndoe", "John", "Doe", "123-456-7891", "456 John St", "John City"),
-        "jane@email.com" to UserProfile("jane@email.com", "janesmith", "Jane", "Smith", "123-456-7892", "789 Jane St", "Jane City"),
-        "keshample@email.com" to UserProfile("keshample@email.com", "keshample", "Kesh", "Ample", "123-456-7893", "321 Kesh St", "Kesh City")
-    )
-
+    // ✅ CHECK LOGIN CREDENTIALS
     fun validateCredentials(email: String, password: String): Boolean {
         return userCredentials[email] == password
     }
 
+    // ✅ GET USER PROFILE
     fun getUserProfile(email: String, context: Context): UserProfile? {
         val sharedPreferences = context.getSharedPreferences("PicMosaic", Context.MODE_PRIVATE)
+        return userProfiles[email] ?: loadFromSharedPreferences(email, sharedPreferences)
+    }
 
-        return if (sharedPreferences.contains("username_$email")) {
+    // ✅ ADD A NEW USER
+    fun addNewUser(email: String, password: String, profile: UserProfile, context: Context) {
+        userCredentials[email] = password
+        userProfiles[email] = profile
+        saveToSharedPreferences(email, password, profile, context)
+    }
+
+    // ✅ UPDATE USER PROFILE
+    fun updateUserProfile(email: String, profile: UserProfile, context: Context) {
+        userProfiles[email] = profile
+        saveToSharedPreferences(email, userCredentials[email] ?: "", profile, context)
+    }
+
+    // ✅ SAVE TO SHARED PREFERENCES
+    private fun saveToSharedPreferences(email: String, password: String, profile: UserProfile, context: Context) {
+        val sharedPreferences = context.getSharedPreferences("PicMosaic", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString("password_$email", password)
+            putString("first_name_$email", profile.firstName)
+            putString("last_name_$email", profile.lastName)
+            putString("phone_$email", profile.phone)
+            putString("address_$email", profile.address)
+            putString("city_$email", profile.city)
+            apply()
+        }
+    }
+
+    // ✅ LOAD FROM SHARED PREFERENCES
+    private fun loadFromSharedPreferences(email: String, sharedPreferences: android.content.SharedPreferences): UserProfile? {
+        return if (sharedPreferences.contains("password_$email")) {
             UserProfile(
                 email = email,
-                username = sharedPreferences.getString("username_$email", "") ?: "",
+                username = sharedPreferences.getString("first_name_$email", "") ?: "",
                 firstName = sharedPreferences.getString("first_name_$email", "") ?: "",
                 lastName = sharedPreferences.getString("last_name_$email", "") ?: "",
                 phone = sharedPreferences.getString("phone_$email", "") ?: "",
@@ -45,26 +66,7 @@ object DummyUserData {
                 city = sharedPreferences.getString("city_$email", "") ?: ""
             )
         } else {
-            userProfiles[email]  // Fallback to in-memory data if not found
+            null
         }
     }
-
-
-    fun updateUserProfile(email: String, profile: UserProfile, context: Context) {
-        userProfiles[email] = profile  // ✅ Updates in-memory data
-
-        val sharedPreferences = context.getSharedPreferences("PicMosaic", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-
-        with(editor) {
-            putString("username_$email", profile.username)
-            putString("first_name_$email", profile.firstName)
-            putString("last_name_$email", profile.lastName)
-            putString("phone_$email", profile.phone)
-            putString("address_$email", profile.address)
-            putString("city_$email", profile.city)
-            apply()  // ✅ Saves data permanently
-        }
-    }
-
 }

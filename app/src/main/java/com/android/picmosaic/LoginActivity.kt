@@ -26,45 +26,42 @@ class LoginActivity : Activity() {
         initializeViews()
         checkLoginStatus()
 
-        intent?.let{
-            it.getBooleanExtra("isValidRegistered", true).let{
-                isValidRegistered -> isGoodtoLogin
-            }
-            it.getStringExtra("email")?.let{
-                email -> emailEditText.setText(email)
-            }
-            it.getStringExtra("password")?.let{
-                password -> passwordEditText.setText(password)
+        intent?.let {
+            val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+            val savedEmail = sharedPreferences.getString("registered_email", "")
+            val savedPassword = sharedPreferences.getString("registered_password", "")
+
+            if (!savedEmail.isNullOrEmpty() && !savedPassword.isNullOrEmpty()) {
+                emailEditText.setText(savedEmail)
+                passwordEditText.setText(savedPassword)
             }
         }
+
 
         // 🔹 Handle login button click
         loginButton.setOnClickListener {
             val email = emailEditText.txt()
             val password = passwordEditText.txt()
 
-            if(emailEditText.isNotValid() || passwordEditText.isNotValid()){
-                this.toast("Please fill out the forms completely")
+            if (email.isEmpty() || password.isEmpty()) {
+                toast("Please fill out the forms completely")
                 return@setOnClickListener
             }
 
-            if(isGoodtoLogin){
-                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                navigateToHome()
-            }
-
+            // ✅ Validate with stored users
             if (!DummyUserData.validateCredentials(email, password)) {
-                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                toast("Invalid email or password")
                 return@setOnClickListener
             }
 
-            // 🔹 Save login state
+            // ✅ Save login session
             saveLoginData(email)
 
-            // 🔹 Navigate to Home Page
-            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
+            // ✅ Navigate to Home Page
+            toast("Login successful!")
             navigateToHome()
         }
+
 
         forgotPasswordText.setOnClickListener {
             Toast.makeText(this, "Oh naur", Toast.LENGTH_SHORT).show()
@@ -90,6 +87,7 @@ class LoginActivity : Activity() {
         val sharedPref = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         sharedPref.edit().putString("current_user_email", email).apply()
     }
+
 
     private fun navigateToHome() {
         startActivity(Intent(this, DummyHomeActivity::class.java))
