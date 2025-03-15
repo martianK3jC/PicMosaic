@@ -16,9 +16,14 @@ object DummyUserData {
     private val userProfiles = mutableMapOf<String, UserProfile>()
 
     // ✅ CHECK LOGIN CREDENTIALS
-    fun validateCredentials(email: String, password: String): Boolean {
-        return userCredentials[email] == password
+    fun validateCredentials(email: String, password: String, context: Context): Boolean {
+        val sharedPreferences = context.getSharedPreferences("PicMosaic", Context.MODE_PRIVATE)
+        val storedPassword = sharedPreferences.getString("password_$email", null)
+
+        return storedPassword == password // ✅ Check against stored password
     }
+
+
 
     // ✅ GET USER PROFILE
     fun getUserProfile(email: String, context: Context): UserProfile? {
@@ -43,7 +48,7 @@ object DummyUserData {
     private fun saveToSharedPreferences(email: String, password: String, profile: UserProfile, context: Context) {
         val sharedPreferences = context.getSharedPreferences("PicMosaic", Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
-            putString("password_$email", password)
+            putString("password_$email", password) // ✅ Ensure password is stored
             putString("first_name_$email", profile.firstName)
             putString("last_name_$email", profile.lastName)
             putString("phone_$email", profile.phone)
@@ -52,6 +57,12 @@ object DummyUserData {
             apply()
         }
     }
+
+    fun getUserPassword(email: String, context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences("PicMosaic", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("password_$email", null)
+    }
+
 
     // ✅ LOAD FROM SHARED PREFERENCES
     private fun loadFromSharedPreferences(email: String, sharedPreferences: android.content.SharedPreferences): UserProfile? {

@@ -1,0 +1,561 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Top Bar -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/buttonBack"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:scaleType="centerInside"
+                    android:layout_alignParentStart="true"
+                    android:padding="10dp"
+                    android:src="@drawable/back_button_developer"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Meet the Legends Behind the Code!"
+                    android:textSize="30sp"
+                    android:textColor="#48A6A7"
+                    android:paddingTop="50dp"
+                    android:gravity="center"
+                    android:fontFamily="@font/poppins_semi_bold"
+                    android:layout_centerHorizontal="true"/>
+
+                <ImageButton
+                    android:id="@+id/buttonSettings"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/settingsdeveloper"
+                    android:layout_alignParentEnd="true"
+                    android:padding="10dp"
+                    android:background="@android:color/transparent"/>
+            </RelativeLayout>
+
+            <!-- Developer Profiles Section -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="15dp">
+
+                <!-- Kesha Profile -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/round_top"/>
+
+                    <ImageView
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/developerKesha"
+                        android:layout_width="150dp"
+                        android:layout_height="300dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/keshapfp" />
+
+
+                </LinearLayout>
+
+                <!-- Arnold Profile -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/developersArnold"
+                        android:layout_width="150dp"
+                        android:layout_height="300dp"
+                        android:src="@drawable/arnoldpfp"
+                        android:background="@android:color/transparent"
+                        />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/round_bott"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Team Vision Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/roundedbox"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Team Vision:"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:fontFamily="@font/poppins_bold"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Debugging our way to greatness—one error at a time!"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins_semi_bold_italic"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"/>
+            </LinearLayout>
+
+            <!-- Click Profile Info -->
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ⓘ Scroll down for more information"
+                android:textSize="12sp"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="#827E7E"
+                android:gravity="center"
+                android:layout_marginTop="20dp"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:scaleX="@integer/material_motion_duration_long_1"
+                    android:src="@drawable/gray_line"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="20dp">
+
+                    <ImageView
+                        android:layout_width="170dp"
+                        android:layout_height="344dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/arnoldpfp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hi There!"
+                            android:textColor="#48A6A7"
+                            android:textSize="32sp"
+                            android:fontFamily="@font/poppins_medium"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I’m Arnold!"
+                            android:textColor="#48A6A7"
+                            android:textSize="32sp"
+                            android:fontFamily="@font/poppins_medium" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="\'Procrastination is like a credit card: it’s a lot of fun until you get the bill.\'"
+                            android:textSize="12sp"
+                            android:textColor="#827E7E"
+                            android:fontFamily="@font/poppins_italic" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/course"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\ BS Information Technology CIT -U"
+                                android:textSize="10sp"
+                                android:textColor="#827E7E"
+                                android:fontFamily="@font/poppins_italic" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/name"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\ Arnold Niño B. Canoy"
+                                android:textSize="11sp"
+                                android:textColor="#827E7E"
+                                android:fontFamily="@font/poppins_italic" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/email"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\ arnoldniño.canoy@cit.edu"
+                                android:textSize="11sp"
+                                android:textColor="#827E7E"
+                                android:fontFamily="@font/poppins_italic" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/location"
+                                android:layout_marginEnd="4dp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\ Alopez, Labangon Cebu City"
+                                android:textSize="11sp"
+                                android:textColor="#827E7E"
+                                android:fontFamily="@font/poppins_italic" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/birthdate"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_italic"
+                                android:text=" November 9, 2004"
+                                android:textColor="#827E7E"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </ImageView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Skills:"
+                    android:fontFamily="@font/poppins_black_italic"
+                    android:textSize="13sp"
+                    android:layout_marginTop="20dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• Infinite Loop Creator - accidentally creating loops so powerful they defy the laws of time.\n• Keyboard Warrior - fluent in both programming languages and aggressive debugging."
+                    android:fontFamily="@font/poppins_italic"
+                    android:textSize="13sp"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fun Facts:"
+                    android:fontFamily="@font/poppins_bold_italic"
+                    android:textSize="13sp"
+                    android:layout_marginTop="20dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• My code only breaks when someone is watching.\n• I made dark mode a lifestyle.\n• In a relationship with my code."
+                    android:fontFamily="@font/poppins_italic"
+                    android:textSize="13sp"
+                    android:layout_marginTop="5dp"/>
+            </LinearLayout>
+
+            <!--Kesha Page-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:scaleX="@integer/material_motion_duration_long_1"
+                android:src="@drawable/gray_line"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="20dp">
+
+                    <ImageView
+                        android:layout_width="170dp"
+                        android:layout_height="344dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/keshapfp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hi There!"
+                            android:textColor="#48A6A7"
+                            android:textSize="32sp"
+                            android:fontFamily="@font/poppins_medium"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I’m Kesha!"
+                            android:textColor="#48A6A7"
+                            android:textSize="32sp"
+                            android:fontFamily="@font/poppins_medium" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="\'Living one semicolon at a time—coding, coffee, anime, and the eternal lie: 'I’ll start early this time.'"
+                            android:textSize="12sp"
+                            android:textColor="#827E7E"
+                            android:fontFamily="@font/poppins_italic" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/course"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\ BS Computer Science at CIT -U"
+                                android:textSize="10sp"
+                                android:textColor="#827E7E"
+                                android:fontFamily="@font/poppins_italic" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/name"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\ Kesha Jane L. Ceniza"
+                                android:textSize="11sp"
+                                android:textColor="#827E7E"
+                                android:fontFamily="@font/poppins_italic" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/email"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\ keshajane.ceniza@cit.edu"
+                                android:textSize="11sp"
+                                android:textColor="#827E7E"
+                                android:fontFamily="@font/poppins_italic" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/location"
+                                android:layout_marginEnd="4dp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\ Labangon, Cebu City"
+                                android:textSize="11sp"
+                                android:textColor="#827E7E"
+                                android:fontFamily="@font/poppins_italic" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/birthdate"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_italic"
+                                android:text=" March 24, 2005"
+                                android:textColor="#827E7E"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </ImageView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Skills:"
+                    android:fontFamily="@font/poppins_bold_italic"
+                    android:textSize="13sp"
+                    android:layout_marginTop="20dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• Writing code that works (after ten tries)
+            \n• Staring at the screen until the bug fixes
+            \n• Making Java and C++ fight for my attention
+            \n• UI/UX Design (a.k.a. making things look ✨aesthetic✨)"
+                    android:fontFamily="@font/poppins_italic"
+                    android:textSize="13sp"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fun Facts:"
+                    android:fontFamily="@font/poppins_bold_italic"
+                    android:textSize="13sp"
+                    android:layout_marginTop="20dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• Can write a 200-line program but forgets to add a semicolon
+            \n• Lives in a constant loop of “just five more minutes”
+            \n• Believes Ctrl + Z is the greatest invention of all time"
+                    android:fontFamily="@font/poppins_italic"
+                    android:textSize="13sp"
+                    android:layout_marginTop="5dp"/>
+            </LinearLayout>
+        </LinearLayout> <!-- Closing LinearLayout inside ScrollView -->
+
+    </ScrollView> <!-- Closing ScrollView -->
+</LinearLayout> <!-- Closing Outer LinearLayout -->

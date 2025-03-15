@@ -13,7 +13,7 @@ import com.android.picmosaic.utils.txt
 class RegisterActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.register)
+        setContentView(R.layout.register_page)
 
         fun navigateToLogin() {
             startActivity(Intent(this, LoginActivity::class.java))
@@ -62,11 +62,9 @@ class RegisterActivity : Activity() {
                 return@setOnClickListener
             }
 
-            // 🔹 SAVE NEW USER TO DATABASE (DummyUserData)
             val newUser = UserProfile(email, firstName, firstName, lastName, phoneNumber, address, city)
             DummyUserData.addNewUser(email, password, newUser, this)
 
-            // 🔹 SAVE TO SHARED PREFERENCES (So login persists)
             val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
             sharedPreferences.edit()
                 .putString("registered_email", email)

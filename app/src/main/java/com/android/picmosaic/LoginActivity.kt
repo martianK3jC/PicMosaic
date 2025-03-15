@@ -49,7 +49,7 @@ class LoginActivity : Activity() {
             }
 
             // ✅ Validate with stored users
-            if (!DummyUserData.validateCredentials(email, password)) {
+            if (!DummyUserData.validateCredentials(email, password, this)) {
                 toast("Invalid email or password")
                 return@setOnClickListener
             }
@@ -85,12 +85,21 @@ class LoginActivity : Activity() {
     // ✅ Save login data so the profile uses it
     private fun saveLoginData(email: String) {
         val sharedPref = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-        sharedPref.edit().putString("current_user_email", email).apply()
+
+        // ✅ Get user profile details from DummyUserData
+        val userProfile = DummyUserData.getUserProfile(email, this)
+
+        if (userProfile != null) {
+            sharedPref.edit()
+                .putString("current_user_email", email) // 🔹 Save logged-in user
+                .putString("user_first_name_$email", userProfile.firstName) // ✅ Save First Name
+                .putString("password_$email", DummyUserData.getUserPassword(email, this) ?: "")
+                .apply()
+        }
     }
 
-
     private fun navigateToHome() {
-        startActivity(Intent(this, DummyHomeActivity::class.java))
+        startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }
 

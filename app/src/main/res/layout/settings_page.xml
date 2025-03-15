@@ -1,0 +1,261 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <!-- Profile Header Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/borderforsettings"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/halfrounded_rectangle"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Top Bar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:layout_marginTop="20dp">
+
+                    <ImageButton
+                        android:id="@+id/arrow_back_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/arrow_back"
+                        android:background="@android:color/transparent" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:text="Settings"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="30sp" />
+
+                    <ImageButton
+                        android:id="@+id/settings_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/light_settings_icon"
+                        android:background="@android:color/transparent" />
+                </LinearLayout>
+
+                <!-- Profile Picture Section -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile_image"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/default_profile" />
+                </RelativeLayout>
+
+                <!-- Username -->
+                <TextView
+                    android:id="@+id/profile_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="User's Name"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Settings Menu -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="25dp"
+        android:orientation="vertical">
+
+        <!-- Profile Option -->
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/profile" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Profile"
+                android:textSize="20sp"
+                android:textColor="#827E7E"
+                android:fontFamily="@font/poppins_regular" />
+
+            <ImageButton
+                android:id="@+id/profileButton"
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/clickbutton"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <!-- Favourites Option -->
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/favourites" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Favourites"
+                android:textSize="20sp"
+                android:textColor="#827E7E"
+                android:fontFamily="@font/poppins_regular" />
+
+            <ImageButton
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/favoritesButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/clickbutton"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <!-- Downloads Option -->
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/downloads" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Downloads"
+                android:textSize="20sp"
+                android:textColor="#827E7E"
+                android:fontFamily="@font/poppins_regular" />
+
+            <ImageButton
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/downloadsButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/clickbutton"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <!-- Security Option -->
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/security" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Security"
+                android:textSize="20sp"
+                android:textColor="#827E7E"
+                android:fontFamily="@font/poppins_regular" />
+
+            <ImageButton
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/securityButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/clickbutton"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <!-- Developers Option -->
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/developers" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="About the Developers"
+                android:textSize="20sp"
+                android:textColor="#827E7E"
+                android:fontFamily="@font/poppins_regular" />
+
+            <ImageButton
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/developersButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/clickbutton"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

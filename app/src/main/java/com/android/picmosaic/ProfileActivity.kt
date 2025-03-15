@@ -122,12 +122,18 @@ class ProfileActivity : Activity() {
         }
         // Back Button - Switch to Profile View
         arrowBackEditButton.setOnClickListener {
-            showDiscardChangesDialog()
+            showDiscardChangesDialog {
+                navigateToHomePage()
+            }
         }
         //Settings Button
         settingsButton.setOnClickListener {navigateToSettingsPage()}
         //Settings Button2
-        settingsButtonEdit.setOnClickListener {navigateToSettingsPage()}
+        settingsButtonEdit.setOnClickListener {
+            showDiscardChangesDialog {
+                navigateToSettingsPage()
+            }
+        }
         //Logout Button
         logoutButton.setOnClickListener {showLogoutDialog()}
         //Edit Profile Picture Button
@@ -139,24 +145,19 @@ class ProfileActivity : Activity() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
 
-        val savedImagePath = sharedPreferences.getString("profile_image_path_$email", null)
+        val savedImagePath = sharedPreferences.getString("profile_image_path_$email", null) // 🔹 Unique to the user
 
-        if (savedImagePath.isNullOrEmpty()) {
-            showToast("No saved profile image found for $email")
-            return
+        if (!savedImagePath.isNullOrEmpty()) {
+            val file = File(savedImagePath)
+            if (file.exists()) {
+                BitmapFactory.decodeFile(savedImagePath)?.let { bitmap ->
+                    profileImage.setImageBitmap(bitmap)
+                    profileImageEdit.setImageBitmap(bitmap)
+                }
+            }
         }
-
-        val file = File(savedImagePath)
-        if (!file.exists()) {
-            showToast("Saved profile image not found")
-            return
-        }
-
-        BitmapFactory.decodeFile(savedImagePath)?.let { bitmap ->
-            profileImage.setImageBitmap(bitmap)
-            profileImageEdit.setImageBitmap(bitmap)
-        } ?: showToast("Error: Profile image is invalid")
     }
+
 
 
 
@@ -203,14 +204,19 @@ class ProfileActivity : Activity() {
         // ✅ Save to SharedPreferences
         DummyUserData.updateUserProfile(email, updatedProfile, this)
 
+        sharedPreferences.edit()
+            .putString("user_first_name_$email", updatedProfile.firstName)
+            .apply()
+
+
         // ✅ Reload the saved profile
         loadProfileData()
         loadSavedProfileImage()
-        // ✅ Switch back to the profile view
-        viewFlipper.showPrevious()  // 🔹 This moves back to the non-editing state
 
+        viewFlipper.showPrevious()  // 🔹 Switch back to the profile view
         showToast("Profile updated successfully")
     }
+
 
 
 
@@ -247,18 +253,21 @@ class ProfileActivity : Activity() {
         openGallery() // Directly open gallery instead of showing a dialog
     }
 
-
     //Show Discard Changes Dialog box
-    private fun showDiscardChangesDialog() {
+    private fun showDiscardChangesDialog(onConfirm: () -> Unit) {
         AlertDialog.Builder(this, R.style.CustomAlertDialog)
             .setTitle("Discard Changes")
             .setMessage("Are you sure you want to discard your changes?")
             .setPositiveButton("Yes") { _, _ ->
-                viewFlipper.showPrevious()
+                loadProfileData() // ✅ Reload profile to discard changes
+                loadSavedProfileImage() // ✅ Reload profile image
+                viewFlipper.showPrevious() // ✅ Go back to profile view
+                onConfirm() // Execute the provided lambda
             }
-            .setNegativeButton("No"){ dialog, _ -> dialog.dismiss() }
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
             .show()
     }
+
 
     //Show Save Changes Dialog box
     private fun showSaveChangesDialog() {
@@ -278,13 +287,15 @@ class ProfileActivity : Activity() {
 
     //Go to Settings Page
     private fun navigateToSettingsPage(){
-        val intent = Intent(this, DummySettingsActivity::class.java)
+        val intent = Intent(this, SettingsActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
+        finish()
     }
 
     //Go to Home Page
     private fun navigateToHomePage(){
-        val intent = Intent(this, DummyHomeActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
 
@@ -329,21 +340,16 @@ class ProfileActivity : Activity() {
     fun handleLogout() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
 
-        // Clear login session
-        sharedPreferences.edit().remove("current_user_email").apply()
+        // ✅ Only remove session-related keys, NOT user data
+        sharedPreferences.edit()
+            .remove("current_user_email") // 🔹 Clears login session
+            .apply()
 
-        // 🔹 Clear cached profile images
-        profileImage.setImageDrawable(null)
-        profileImageEdit.setImageDrawable(null)
-
-        // 🔹 Go back to login screen
+        // ✅ Go back to login screen
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
 
         finish() // Close ProfileActivity
     }
-
-
-
 }
