@@ -13,7 +13,7 @@ import com.android.picmosaic.utils.txt
 class RegisterActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.register)
+        setContentView(R.layout.register_page)
 
         fun navigateToLogin() {
             startActivity(Intent(this, LoginActivity::class.java))

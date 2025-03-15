@@ -1,0 +1,25 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="11dp"
+    android:height="14dp"
+    android:viewportWidth="11"
+    android:viewportHeight="14">
+
+    <!-- Location Pin Outline -->
+    <path
+        android:pathData="M1 5.68124C1 8.96204 3.72861 11.6751 4.93636 12.7153C5.10921 12.8642 5.19667 12.9395 5.32562 12.9777C5.42604 13.0074 5.57382 13.0074 5.67424 12.9777C5.80344 12.9394 5.89028 12.8648 6.06378 12.7154C7.27154 11.6752 10 8.96234 10 5.68154C10 4.43995 9.52592 3.24908 8.682 2.37115C7.83808 1.49322 6.69356 1 5.50008 1C4.3066 1 3.16195 1.49329 2.31803 2.37122C1.47411 3.24915 1 4.43965 1 5.68124Z"
+        android:strokeWidth="1"
+        android:strokeColor="#827E7E"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        />
+
+    <!-- Location Pin Inner Circle -->
+    <path
+        android:pathData="M4.2143 5.0572C4.2143 5.80411 4.78994 6.4096 5.50003 6.4096C6.21011 6.4096 6.78575 5.80411 6.78575 5.0572C6.78575 4.31029 6.21011 3.7048 5.50003 3.7048C4.78994 3.7048 4.2143 4.31029 4.2143 5.0572Z"
+        android:strokeWidth="1"
+        android:strokeColor="#827E7E"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        />
+
+</vector>
