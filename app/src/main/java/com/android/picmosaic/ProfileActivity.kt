@@ -59,8 +59,8 @@ class ProfileActivity : Activity() {
     private var selectedImageUri: Uri? = null
     private lateinit var originalProfile: UserProfile
 
-//✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
-        override fun onCreate(savedInstanceState: Bundle?) {
+    //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
+    override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile_page_with_edit)
@@ -73,7 +73,7 @@ class ProfileActivity : Activity() {
         setupButtonListeners()
     }
 
-//-----------------S-O-M-E--C-O-M-P-L-I-C-A-T-E-D--S-T-U-F-F-----------------
+    //-----------------S-O-M-E--C-O-M-P-L-I-C-A-T-E-D--S-T-U-F-F-----------------
     //Initialize Views
     private fun initializeViews(){
         // Initialize ViewFlipper
@@ -119,6 +119,7 @@ class ProfileActivity : Activity() {
                 phone = phoneEdit.text.toString(),
                 address = addressEdit.text.toString(),
                 city = cityEdit.text.toString()
+
             )
             viewFlipper.showNext()
         }
@@ -154,8 +155,12 @@ class ProfileActivity : Activity() {
         editProfilePictureButton.setOnClickListener {showImagePickerDialog()}
     }
 
-    private fun changesExist(): Boolean{
-        if(!::originalProfile.isInitialized) return false
+    private fun changesExist(): Boolean {
+        if (!::originalProfile.isInitialized) return false
+
+        val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+        val email = sharedPreferences.getString("current_user_email", null) ?: return false
+        val savedImagePath = sharedPreferences.getString("profile_image_path_$email", null)
 
         return originalProfile != UserProfile(
             email = profileEmailEdit.hint.toString(),
@@ -165,9 +170,9 @@ class ProfileActivity : Activity() {
             phone = phoneEdit.text.toString(),
             address = addressEdit.text.toString(),
             city = cityEdit.text.toString()
-        )
-
+        ) || (selectedImageUri != null && selectedImageUri.toString() != savedImagePath)
     }
+
 
     //Load the saved profile image
     private fun loadSavedProfileImage() {
