@@ -59,6 +59,7 @@ class ProfileActivity : Activity() {
     private lateinit var cityEdit: EditText
 
     private var selectedImageUri: Uri? = null
+    private lateinit var originalProfile: UserProfile
 
 //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,7 +112,18 @@ class ProfileActivity : Activity() {
     //Set upp button listeners
     private fun setupButtonListeners(){
         // Edit Profile Button - Switch to Edit View
-        editProfileButton.setOnClickListener {viewFlipper.showNext()}
+        editProfileButton.setOnClickListener {
+            originalProfile = UserProfile(
+                email = profileEmailEdit.hint.toString(),
+                username = profileUsernameEdit.text.toString(),
+                firstName = firstNameEdit.text.toString(),
+                lastName = lastNameEdit.text.toString(),
+                phone = phoneEdit.text.toString(),
+                address = addressEdit.text.toString(),
+                city = cityEdit.text.toString()
+            )
+            viewFlipper.showNext()
+        }
         // Save Button - Save Changes
         saveButton.setOnClickListener {
             showSaveChangesDialog()
@@ -122,12 +134,16 @@ class ProfileActivity : Activity() {
         }
         // Back Button - Switch to Profile View
         arrowBackEditButton.setOnClickListener {
-            showDiscardChangesDialog {
-                navigateToHomePage()
+            if(!changesExist()){
+                viewFlipper.showPrevious()
+            }else{
+                showDiscardChangesDialog{}
             }
         }
+
         //Settings Button
         settingsButton.setOnClickListener {navigateToSettingsPage()}
+
         //Settings Button2
         settingsButtonEdit.setOnClickListener {
             showDiscardChangesDialog {
@@ -138,6 +154,21 @@ class ProfileActivity : Activity() {
         logoutButton.setOnClickListener {showLogoutDialog()}
         //Edit Profile Picture Button
         editProfilePictureButton.setOnClickListener {showImagePickerDialog()}
+    }
+
+    private fun changesExist(): Boolean{
+        if(!::originalProfile.isInitialized) return false
+
+        return originalProfile != UserProfile(
+            email = profileEmailEdit.hint.toString(),
+            username = profileUsernameEdit.text.toString(),
+            firstName = firstNameEdit.text.toString(),
+            lastName = lastNameEdit.text.toString(),
+            phone = phoneEdit.text.toString(),
+            address = addressEdit.text.toString(),
+            city = cityEdit.text.toString()
+        )
+
     }
 
     //Load the saved profile image
@@ -168,6 +199,8 @@ class ProfileActivity : Activity() {
         val email = sharedPreferences.getString("current_user_email", null) ?: return
 
         val profile = DummyUserData.getUserProfile(email, this) ?: return
+
+        originalProfile = profile.copy()
 
         profileUsername.text = profile.firstName
         profileFirstName.text = profile.firstName
