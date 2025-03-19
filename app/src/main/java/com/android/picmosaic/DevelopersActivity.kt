@@ -32,21 +32,5 @@ class DevelopersActivity : Activity() {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
-//        val developerKesha = findViewById<ImageButton>(R.id.developerKesha)
-//        developerKesha.setOnClickListener {
-//            Log.e("Kesha", "Kesha!")
-//            Toast.makeText(this, "Kesha!", Toast.LENGTH_SHORT).show()
-//
-//            val intent = Intent(this, DevelopersKeshaActivity::class.java)
-//            startActivity(intent)
-//        }
-//        val developersArnold = findViewById<ImageButton>(R.id.developersArnold)
-//        developersArnold.setOnClickListener {
-//            Log.e("Arnold", "Arnold!")
-//            Toast.makeText(this, "Arnold!", Toast.LENGTH_SHORT).show()
-//
-//            val intent = Intent(this, DevelopersArnoldActivity::class.java)
-//            startActivity(intent)
-//        }
     }
 }

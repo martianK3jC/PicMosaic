@@ -16,8 +16,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewFlipper
-import com.android.picmosaic.utils.isRegistered
-import com.android.picmosaic.utils.txt
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.io.FileOutputStream

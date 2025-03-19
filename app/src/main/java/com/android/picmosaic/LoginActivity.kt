@@ -7,8 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.android.picmosaic.utils.isRegistered
-import com.android.picmosaic.utils.isNotValid
+import com.android.picmosaic.utils.showMessage
 import com.android.picmosaic.utils.toast
 import com.android.picmosaic.utils.txt
 
@@ -18,6 +17,7 @@ class LoginActivity : Activity() {
     private lateinit var forgotPasswordText: TextView
     private lateinit var loginButton: Button
     private lateinit var signupButton: Button
+    private lateinit var linkTerms: TextView
     var isGoodtoLogin = false;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +25,7 @@ class LoginActivity : Activity() {
 
         initializeViews()
         checkLoginStatus()
+
 
         intent?.let {
             val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
@@ -67,6 +68,10 @@ class LoginActivity : Activity() {
             Toast.makeText(this, "Oh naur", Toast.LENGTH_SHORT).show()
         }
 
+        linkTerms.setOnClickListener {
+            showMessage("Agree nalang jud")
+        }
+
         signupButton.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
             finish()
@@ -104,6 +109,7 @@ class LoginActivity : Activity() {
     }
 
     private fun initializeViews(){
+        linkTerms = findViewById(R.id.tvTermsLink)
         emailEditText = findViewById(R.id.emailEditText)
         passwordEditText = findViewById(R.id.passwordEditText)
         forgotPasswordText = findViewById(R.id.forgotPasswordText)

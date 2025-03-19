@@ -22,13 +22,7 @@ fun Activity.toast(msg:String){
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
 }
 
-fun Activity.showError(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-}
-
-fun isRegistered(check: Boolean): Boolean{
-    return check
-}
-fun Activity.showSuccess(message: String) {
+fun Activity.showMessage(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
+
