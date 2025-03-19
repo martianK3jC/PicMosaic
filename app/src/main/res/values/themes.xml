@@ -83,8 +83,8 @@
     </style>
 
     <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeWidth">2dp</item>
-        <item name="boxStrokeWidthFocused">3dp</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
 
         <!-- Corner Radius -->
         <item name="boxCornerRadiusTopEnd">12dp</item>

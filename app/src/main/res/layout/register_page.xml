@@ -23,7 +23,7 @@
             <!-- App Logo -->
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="120dp"
+                android:layout_height="90dp"
                 android:src="@drawable/app_logo" />
 
             <TextView
@@ -63,7 +63,7 @@
                             android:layout_weight="1"
                             android:hint="First Name"
                             style="@style/CustomTextInputLayout"
-                            android:paddingVertical="2dp"
+                            android:paddingVertical="5dp"
                             >
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -84,7 +84,7 @@
                             android:layout_weight="1"
                             android:hint="Last Name"
                             style="@style/CustomTextInputLayout"
-                            android:paddingVertical="2dp"
+                            android:paddingVertical="5dp"
                             >
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -105,7 +105,7 @@
                         android:layout_height="match_parent"
                         android:hint="Email"
                         style="@style/CustomTextInputLayout"
-                        android:paddingVertical="2dp"
+                        android:paddingVertical="5dp"
                         >
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -124,7 +124,7 @@
                         android:hint="Password"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingVertical="2dp"
+                        android:paddingVertical="5dp"
                         app:endIconMode="password_toggle"
                         >
 
@@ -146,7 +146,7 @@
                         android:hint="Confirm Password"
                         style="@style/CustomTextInputLayout"
                         app:endIconMode="password_toggle"
-                        android:paddingVertical="2dp"
+                        android:paddingVertical="5dp"
                         >
 
                         <com.google.android.material.textfield.TextInputEditText

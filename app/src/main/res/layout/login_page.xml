@@ -27,7 +27,7 @@
         <!-- app logo -->
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="120dp"
+            android:layout_height="80dp"
             android:src="@drawable/app_logo" />
 
         <!-- Welcome Back -->
@@ -56,7 +56,6 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:layout_marginVertical="5dp"
             android:layout_marginHorizontal="30dp"
             >
                 <!-- Email Input -->
@@ -141,49 +140,6 @@
                     android:layout_marginVertical="5dp"
                     android:gravity="center"
                     android:orientation="vertical">
-                        <!-- Policy -->
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:paddingVertical="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                                <!-- First line (Terms & Conditions) -->
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:gravity="center"
-                                    >
-                                        <TextView
-                                            android:id="@+id/tvTermsText"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="By continuing you are agreeing to our "
-                                            android:textSize="12sp" />
-
-                                        <TextView
-                                            android:id="@+id/tvTermsLink"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:clickable="true"
-                                            android:focusable="true"
-                                            android:text="terms &amp; conditions"
-                                            android:textColor="#4DB6AC"
-                                            android:textSize="12sp" />
-                                </LinearLayout>
-
-                                <!-- Second line (Privacy Policies) -->
-                                <TextView
-                                    android:id="@+id/tvPrivacyText"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="and our privacy policies"
-                                    android:textSize="12sp" />
-                        </LinearLayout>
-
-
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -231,18 +187,61 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="40dp"
-                            android:layout_marginBottom="10dp"
+                            android:layout_marginVertical="5dp"
                             android:text="Signup"
                             android:paddingVertical="10dp"
                             android:textSize="18sp"
                             android:fontFamily="@font/poppins_medium"
                             />
 
+                        <!-- Policy -->
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="5dp"
+                            android:layout_marginVertical="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
+                                <!-- First line (Terms & Conditions) -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center"
+                                    >
+                                        <TextView
+                                            android:id="@+id/tvTermsLink"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:clickable="true"
+                                            android:focusable="true"
+                                            android:text="Terms of Use"
+                                            android:textColor="#4DB6AC"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:id="@+id/tvTermsText"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text=" | "
+                                            android:textSize="16sp" />
+
+                                        <TextView
+                                            android:id="@+id/tvTermsPrivacyPolicy"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:clickable="true"
+                                            android:focusable="true"
+                                            android:text="Privacy Policy"
+                                            android:textColor="#4DB6AC"
+                                            android:textSize="14sp" />
+                                </LinearLayout>
+
+                        </LinearLayout>
 
                 </LinearLayout>
-
-
 
         </LinearLayout>
 </ScrollView>
