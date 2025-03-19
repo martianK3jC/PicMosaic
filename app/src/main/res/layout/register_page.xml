@@ -23,11 +23,11 @@
             <!-- App Logo -->
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="90dp"
+                android:layout_height="80dp"
                 android:src="@drawable/app_logo" />
 
             <TextView
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Create Account"
