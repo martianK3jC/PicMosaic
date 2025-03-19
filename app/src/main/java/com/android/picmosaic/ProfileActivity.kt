@@ -191,6 +191,15 @@ class ProfileActivity : Activity() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
 
+        selectedImageUri?.let { uri ->
+            val savedPath = copyImageToInternalStorage(uri, email)
+            if (savedPath != null) {
+                sharedPreferences.edit()
+                    .putString("profile_image_path_$email", savedPath) // ✅ Save only when "Save" is clicked
+                    .apply()
+            }
+        }
+
         val updatedProfile = UserProfile(
             email = email,
             username = profileUsernameEdit.text.toString(),
@@ -201,24 +210,19 @@ class ProfileActivity : Activity() {
             city = cityEdit.text.toString()
         )
 
-        // ✅ Save to SharedPreferences
-        DummyUserData.updateUserProfile(email, updatedProfile, this)
+        DummyUserData.updateUserProfile(email, updatedProfile, this) // ✅ Save new profile info
 
         sharedPreferences.edit()
             .putString("user_first_name_$email", updatedProfile.firstName)
             .apply()
 
+        loadProfileData()  // ✅ Reload the saved profile
+        loadSavedProfileImage() // ✅ Reload the saved image
 
-        // ✅ Reload the saved profile
-        loadProfileData()
-        loadSavedProfileImage()
-
-        viewFlipper.showPrevious()  // 🔹 Switch back to the profile view
+        selectedImageUri = null // ✅ Clear selected image after saving
+        viewFlipper.showPrevious()  // ✅ Switch back to profile view
         showToast("Profile updated successfully")
     }
-
-
-
 
     // Helper function for showing a toast
     private fun showToast(message: String) {
@@ -259,14 +263,16 @@ class ProfileActivity : Activity() {
             .setTitle("Discard Changes")
             .setMessage("Are you sure you want to discard your changes?")
             .setPositiveButton("Yes") { _, _ ->
-                loadProfileData() // ✅ Reload profile to discard changes
-                loadSavedProfileImage() // ✅ Reload profile image
-                viewFlipper.showPrevious() // ✅ Go back to profile view
-                onConfirm() // Execute the provided lambda
+                loadProfileData() // ✅ Reload old profile details
+                loadSavedProfileImage() // ✅ Reload old profile picture
+                selectedImageUri = null // ✅ Clear the unsaved image selection
+                viewFlipper.showPrevious() // ✅ Switch back to profile view
             }
             .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
             .show()
     }
+
+
 
 
     //Show Save Changes Dialog box
@@ -311,31 +317,14 @@ class ProfileActivity : Activity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            val imageUri = data?.data ?: return  // If no image is selected, exit early
+            val imageUri = data?.data ?: return // If no image is selected, exit early
 
-            val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-            val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
+            selectedImageUri = imageUri // ✅ Store the image TEMPORARILY, not save yet
 
-            val savedPath = copyImageToInternalStorage(imageUri, email) ?: run {
-                showToast("Failed to save image")
-                return
-            }
-
-            // Check if file exists before setting the image
-            val file = File(savedPath)
-            if (file.exists()) {
-                profileImageEdit.setImageBitmap(BitmapFactory.decodeFile(savedPath))
-                selectedImageUri = Uri.fromFile(file)
-
-                // ✅ Save the image path specific to the logged-in user
-                sharedPreferences.edit()
-                    .putString("profile_image_path_$email", savedPath) // Unique key per user
-                    .apply()
-            } else {
-                showToast("Error: Image file missing")
-            }
+            profileImageEdit.setImageBitmap(BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri)))
         }
     }
+
 
     fun handleLogout() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
