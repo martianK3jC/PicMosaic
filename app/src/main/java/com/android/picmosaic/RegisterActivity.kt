@@ -54,11 +54,24 @@ class RegisterActivity : Activity() {
                 return@setOnClickListener
             }
 
-            val newUser = UserProfile(email, firstName, lastName, firstName, "", "", "")
+            val newUser = UserProfile(email, firstName, firstName, lastName, "", "", "")
             DummyUserData.addNewUser(email, password, newUser, this)
 
+            // ✅ Save new user credentials to SharedPreferences
+            val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+            sharedPreferences.edit()
+                .putString("registered_email", email)
+                .putString("registered_password", password)
+                .apply()
+
             showMessage("Registration successful!")
-            navigateToLogin()
+
+            // ✅ Pass email & password to LoginActivity for autofill
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.putExtra("email", email)
+            intent.putExtra("password", password)
+            startActivity(intent)
+            finish()
         }
     }
 }
