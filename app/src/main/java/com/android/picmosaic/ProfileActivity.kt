@@ -145,8 +145,12 @@ class ProfileActivity : Activity() {
 
         //Settings Button2
         settingsButtonEdit.setOnClickListener {
-            showDiscardChangesDialog {
+            if(!changesExist()){
                 navigateToSettingsPage()
+            }else{
+                showDiscardChangesDialog{
+                    navigateToSettingsPage()
+                }
             }
         }
         //Logout Button
@@ -179,20 +183,20 @@ class ProfileActivity : Activity() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
 
-        val savedImagePath = sharedPreferences.getString("profile_image_path_$email", null) // 🔹 Unique to the user
+        val savedImagePath = sharedPreferences.getString("profile_image_path_$email", null)
 
         if (!savedImagePath.isNullOrEmpty()) {
             val file = File(savedImagePath)
             if (file.exists()) {
-                BitmapFactory.decodeFile(savedImagePath)?.let { bitmap ->
-                    profileImage.setImageBitmap(bitmap)
-                    profileImageEdit.setImageBitmap(bitmap)
-                }
+                val bitmap = BitmapFactory.decodeFile(savedImagePath)
+                profileImage.setImageBitmap(bitmap)
+                profileImageEdit.setImageBitmap(bitmap)
             }
+        } else {
+            profileImage.setImageResource(R.drawable.default_profile)
+            profileImageEdit.setImageResource(R.drawable.default_profile)
         }
     }
-
-
 
 
 
@@ -285,9 +289,6 @@ class ProfileActivity : Activity() {
         }
     }
 
-
-
-
     // Only allow choosing from the gallery
     private fun showImagePickerDialog() {
         openGallery() // Directly open gallery instead of showing a dialog
@@ -299,14 +300,16 @@ class ProfileActivity : Activity() {
             .setTitle("Discard Changes")
             .setMessage("Are you sure you want to discard your changes?")
             .setPositiveButton("Yes") { _, _ ->
-                loadProfileData() // ✅ Reload old profile details
-                loadSavedProfileImage() // ✅ Reload old profile picture
-                selectedImageUri = null // ✅ Clear the unsaved image selection
+                loadProfileData()  // ✅ Reload old profile details
+                loadSavedProfileImage()  // ✅ Reload old profile picture
+                selectedImageUri = null // ✅ Clear unsaved image selection
                 viewFlipper.showPrevious() // ✅ Switch back to profile view
+                onConfirm() // ✅ Call the function passed as a parameter
             }
             .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
             .show()
     }
+
 
 
 
@@ -364,11 +367,14 @@ class ProfileActivity : Activity() {
 
     fun handleLogout() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
 
-        // ✅ Only remove session-related keys, NOT user data
-        sharedPreferences.edit()
-            .remove("current_user_email") // 🔹 Clears login session
-            .apply()
+        val email = sharedPreferences.getString("current_user_email", null) ?: return
+        val password = sharedPreferences.getString("password_$email", null) // 🔹 Keep password intact
+
+        editor.remove("current_user_email") // ✅ Clears only session
+        editor.putString("password_$email", password) // ✅ Ensure password is still stored
+        editor.apply()
 
         // ✅ Go back to login screen
         val intent = Intent(this, LoginActivity::class.java)
@@ -377,4 +383,6 @@ class ProfileActivity : Activity() {
 
         finish() // Close ProfileActivity
     }
+
+
 }

@@ -18,7 +18,6 @@ class LoginActivity : Activity() {
     private lateinit var loginButton: Button
     private lateinit var signupButton: Button
     private lateinit var linkTerms: TextView
-    var isGoodtoLogin = false;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_page)
@@ -26,16 +25,30 @@ class LoginActivity : Activity() {
         initializeViews()
         checkLoginStatus()
 
+        val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
 
         intent?.let {
-            val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
-            val savedEmail = sharedPreferences.getString("registered_email", "")
-            val savedPassword = sharedPreferences.getString("registered_password", "")
+            val newEmail = it.getStringExtra("registered_email") ?: ""
+            val newPassword = it.getStringExtra("registered_password") ?: ""
 
-            if (!savedEmail.isNullOrEmpty() && !savedPassword.isNullOrEmpty()) {
-                emailEditText.setText(savedEmail)
-                passwordEditText.setText(savedPassword)
+            if (newEmail.isNotEmpty() && newPassword.isNotEmpty()) {
+                sharedPreferences.edit()
+                    .putString("registered_email", newEmail)
+                    .putString("registered_password", newPassword)
+                    .apply()
+
+                emailEditText.setText(newEmail)
+                passwordEditText.setText(newPassword)
             }
+        }
+
+       // Ensure autofill happens even if intent doesn't provide new data
+        val savedEmail = sharedPreferences.getString("registered_email", "")
+        val savedPassword = sharedPreferences.getString("registered_password", "")
+
+        if (!savedEmail.isNullOrEmpty() && !savedPassword.isNullOrEmpty()) {
+            emailEditText.setText(savedEmail)
+            passwordEditText.setText(savedPassword)
         }
 
 
@@ -57,7 +70,6 @@ class LoginActivity : Activity() {
 
             // ✅ Save login session
             saveLoginData(email)
-
             // ✅ Navigate to Home Page
             toast("Login successful!")
             navigateToHome()
@@ -82,26 +94,47 @@ class LoginActivity : Activity() {
     private fun checkLoginStatus() {
         val sharedPref = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         val savedEmail = sharedPref.getString("current_user_email", null)
-        if (savedEmail != null) {
-            navigateToHome()
+
+        if (!savedEmail.isNullOrEmpty()) {
+            navigateToHome() // ✅ Automatically log in if session exists
+        } else {
+            val registeredEmail = sharedPref.getString("registered_email", null)
+            val registeredPassword = sharedPref.getString("password_$registeredEmail", null) // 🔹 Get correct password
+
+            if (!registeredEmail.isNullOrEmpty() && !registeredPassword.isNullOrEmpty()) {
+                emailEditText.setText(registeredEmail)
+                passwordEditText.setText(registeredPassword)
+            }
         }
     }
+
+
 
     // ✅ Save login data so the profile uses it
     private fun saveLoginData(email: String) {
         val sharedPref = getSharedPreferences("PicMosaic", MODE_PRIVATE)
+        val editor = sharedPref.edit()
 
         // ✅ Get user profile details from DummyUserData
         val userProfile = DummyUserData.getUserProfile(email, this)
+        val userPassword = DummyUserData.getUserPassword(email, this) ?: ""  // 🔹 Ensure password is retrieved
 
         if (userProfile != null) {
-            sharedPref.edit()
-                .putString("current_user_email", email) // 🔹 Save logged-in user
-                .putString("user_first_name_$email", userProfile.firstName) // ✅ Save First Name
-                .putString("password_$email", DummyUserData.getUserPassword(email, this) ?: "")
-                .apply()
+            val profileImagePath = sharedPref.getString("profile_image_path_$email", null) // ✅ Keep existing image path
+
+            editor.putString("current_user_email", email) // 🔹 Save logged-in user
+            editor.putString("user_first_name_$email", userProfile.firstName) // ✅ Save First Name
+            editor.putString("password_$email", userPassword) // ✅ Save password correctly
+            editor.putString("profile_image_path_$email", profileImagePath) // ✅ Ensure image path is saved
+
+            editor.apply()
+        } else {
+            toast("Error: User not found.")
         }
     }
+
+
+
 
     private fun navigateToHome() {
         startActivity(Intent(this, HomeActivity::class.java))
