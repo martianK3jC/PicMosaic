@@ -24,6 +24,7 @@ android {
         dataBinding = true
     }
 
+
     buildTypes {
         release {
             isMinifyEnabled = false
