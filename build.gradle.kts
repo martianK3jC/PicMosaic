@@ -5,4 +5,4 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     id("com.google.devtools.ksp") version "1.9.22-1.0.17" apply false
 }
-true // Needed to make the Suppress annotation work for the plugins block
+true
