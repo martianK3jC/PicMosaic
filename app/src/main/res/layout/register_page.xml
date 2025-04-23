@@ -27,9 +27,9 @@
                 android:src="@drawable/app_logo" />
 
             <TextView
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="Create Account"
                 android:textSize="26sp"
                 android:textColor="@color/primary"
@@ -49,13 +49,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
-                    android:layout_marginVertical="10dp"
                     android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
                         <!-- First Name Input -->
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
@@ -63,7 +57,6 @@
                             android:layout_weight="1"
                             android:hint="First Name"
                             style="@style/CustomTextInputLayout"
-                            android:paddingVertical="5dp"
                             >
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -77,27 +70,26 @@
                                 />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Last Name Input -->
-                        <com.google.android.material.textfield.TextInputLayout
+
+
+                    <!-- Last Name Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="Last Name"
+                        style="@style/CustomTextInputLayout"
+                        >
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/registerLastnameEditText"
+                            android:textSize="14sp"
+                            android:layout_weight="1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:hint="Last Name"
-                            style="@style/CustomTextInputLayout"
-                            android:paddingVertical="5dp"
-                            >
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/registerLastnameEditText"
-                                android:textSize="14sp"
-                                android:layout_weight="1"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:inputType="textPersonName"
-                                android:importantForAutofill="no" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                    </LinearLayout>
+                            android:inputType="textPersonName"
+                            android:importantForAutofill="no" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Email Input -->
                     <com.google.android.material.textfield.TextInputLayout
@@ -105,7 +97,6 @@
                         android:layout_height="match_parent"
                         android:hint="Email"
                         style="@style/CustomTextInputLayout"
-                        android:paddingVertical="5dp"
                         >
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -124,7 +115,6 @@
                         android:hint="Password"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingVertical="5dp"
                         app:endIconMode="password_toggle"
                         >
 
@@ -146,7 +136,6 @@
                         android:hint="Confirm Password"
                         style="@style/CustomTextInputLayout"
                         app:endIconMode="password_toggle"
-                        android:paddingVertical="5dp"
                         >
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -170,7 +159,6 @@
                         android:id="@+id/registerButton"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingVertical="10dp"
                         android:layout_marginHorizontal="50dp"
                         android:layout_marginVertical="10dp"
                         android:textSize="18sp"
@@ -193,8 +181,8 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/registerPageLoginButton"
                             style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="65dp"
+                            android:layout_height="35dp"
                             android:textSize="14sp"
                             android:text="Login"
                             android:textColor="@color/primary" />
