@@ -31,9 +31,10 @@
             </RelativeLayout>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textAlignment="center"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/poppins_bold"
                 android:text="Welcome to \nPicMosaic!"
@@ -44,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginVertical="25dp"
                 android:layout_gravity="center">
 
                 <ImageView
@@ -58,34 +60,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="330dp"
-                android:layout_height="80dp"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
-
-                <ImageButton
-                    android:id="@+id/button_galleryoutline"
-                    android:layout_width="165dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="fitCenter"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/galleryoutline"
-                    />
-
-                <ImageButton
-                    android:id="@+id/button_layoutoutline"
-                    android:layout_width="165dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="fitCenter"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/layoutoutline"
-                    />
-            </LinearLayout>
 
             <ImageButton
                 android:id="@+id/button_createoutline"
@@ -98,13 +72,7 @@
                 android:src="@drawable/createoutline"
                 />
 
-            <ImageView
-                android:layout_width="331dp"
-                android:layout_height="136dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
-                android:layout_gravity="center"
-                android:src="@drawable/recentexample"/>
+
 
         </LinearLayout>
     </ScrollView>

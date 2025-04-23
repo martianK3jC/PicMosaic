@@ -32,8 +32,7 @@ class SaveShareActivity : Activity() {
         private lateinit var shareFacebook: ImageButton
         private lateinit var shareInstagram: ImageButton
         private lateinit var shareSnapchat: ImageButton
-        private lateinit var shareTikTok: ImageButton
-        private lateinit var shareGmail: ImageButton
+        private lateinit var openMore: ImageButton
         private lateinit var saveButton: Button
         private lateinit var createAnotherButton: Button
 
@@ -54,8 +53,7 @@ class SaveShareActivity : Activity() {
             shareFacebook = findViewById(R.id.share_facebook)
             shareInstagram = findViewById(R.id.share_instagram)
             shareSnapchat = findViewById(R.id.share_snapchat)
-            shareTikTok = findViewById(R.id.share_tiktok)
-            shareGmail = findViewById(R.id.share_gmail)
+            openMore = findViewById(R.id.open_more)
             saveButton = findViewById(R.id.save_button)
             createAnotherButton = findViewById(R.id.create_another_button)
 
@@ -64,8 +62,7 @@ class SaveShareActivity : Activity() {
             shareFacebook.setOnClickListener { shareToApp("com.facebook.katana") }
             shareInstagram.setOnClickListener { shareToApp("com.instagram.android") }
             shareSnapchat.setOnClickListener { shareToApp("com.snapchat.android") }
-            shareTikTok.setOnClickListener { shareToApp("com.zhiliaoapp.musically") }
-            shareGmail.setOnClickListener { shareToApp("com.google.android.gm") }
+            openMore.setOnClickListener { shareToApp("com.google.android.gm") }
             saveButton.setOnClickListener { saveCollage() }
             createAnotherButton.setOnClickListener {
                 val intent = Intent(this, HomeActivity::class.java)

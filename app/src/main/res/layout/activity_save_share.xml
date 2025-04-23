@@ -3,138 +3,145 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    >
 
-    <!-- Back Button -->
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
+    <!-- wavy header -->
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_revert"
-        android:layout_gravity="start"
-        android:background="?android:attr/selectableItemBackground" />
-
-    <!-- 2x3 Grid for Photos -->
-    <GridLayout
-        android:id="@+id/photo_grid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:rowCount="2"
-        android:columnCount="3"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp">
-
-        <ImageView
-            android:id="@+id/photo1"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:scaleType="centerCrop" />
-
-        <ImageView
-            android:id="@+id/photo2"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:scaleType="centerCrop" />
-
-        <ImageView
-            android:id="@+id/photo3"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:scaleType="centerCrop" />
-
-        <ImageView
-            android:id="@+id/photo4"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:scaleType="centerCrop" />
-
-        <ImageView
-            android:id="@+id/photo5"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:scaleType="centerCrop" />
-
-        <ImageView
-            android:id="@+id/photo6"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:scaleType="centerCrop" />
-    </GridLayout>
-
-    <!-- Share Section -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Share with your friends"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+        android:src="@drawable/wavyheader"
+        android:scaleType="fitXY"
+        />
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:layout_height="wrap_content">
 
         <ImageButton
-            android:id="@+id/share_facebook"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_share"
-            android:layout_marginEnd="8dp"
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_revert"
+            android:layout_gravity="start"
             android:background="?android:attr/selectableItemBackground" />
 
-        <ImageButton
-            android:id="@+id/share_instagram"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_share"
-            android:layout_marginEnd="8dp"
-            android:background="?android:attr/selectableItemBackground" />
+        <!-- 2x3 Grid for Photos -->
+        <GridLayout
+            android:id="@+id/photo_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rowCount="2"
+            android:columnCount="3"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp">
 
-        <ImageButton
-            android:id="@+id/share_snapchat"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_share"
-            android:layout_marginEnd="8dp"
-            android:background="?android:attr/selectableItemBackground" />
+            <ImageView
+                android:id="@+id/photo1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:scaleType="centerCrop" />
 
-        <ImageButton
-            android:id="@+id/share_tiktok"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_share"
-            android:layout_marginEnd="8dp"
-            android:background="?android:attr/selectableItemBackground" />
+            <ImageView
+                android:id="@+id/photo2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:scaleType="centerCrop" />
 
-        <ImageButton
-            android:id="@+id/share_gmail"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_share"
-            android:background="?android:attr/selectableItemBackground" />
+            <ImageView
+                android:id="@+id/photo3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/photo4"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/photo5"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/photo6"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:scaleType="centerCrop" />
+        </GridLayout>
+
+        <!-- Share Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Share with your friends"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <ImageButton
+                android:id="@+id/share_facebook"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/facebook_icon"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/selectableItemBackground" />
+
+            <ImageButton
+                android:id="@+id/share_instagram"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/instagram_icon"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/selectableItemBackground" />
+
+            <ImageButton
+                android:id="@+id/share_snapchat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/messenger_icon"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/selectableItemBackground" />
+
+            <ImageButton
+                android:id="@+id/open_more"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/more_icon"
+                android:background="?android:attr/selectableItemBackground" />
+        </LinearLayout>
+
+        <!-- Save to Device Button -->
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save to device"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Create Another Button -->
+        <Button
+            android:id="@+id/create_another_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create another" />
+
     </LinearLayout>
 
-    <!-- Save to Device Button -->
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save to device"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Create Another Button -->
-    <Button
-        android:id="@+id/create_another_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Create another" />
 </LinearLayout>
