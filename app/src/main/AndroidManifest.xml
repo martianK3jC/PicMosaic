@@ -46,9 +46,6 @@
             android:name=".EditCollageActivity"
             android:exported="false" />
         <activity
-            android:name=".DemoCollageMakerActivity"
-            android:exported="false" />
-        <activity
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity
