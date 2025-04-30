@@ -1,0 +1,241 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/editCollageLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <!-- Top bar -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:padding="12dp">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/back_button_developer"
+            android:background="@null"
+            android:layout_alignParentStart="true"/>
+
+        <ImageButton
+            android:id="@+id/saveButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/downloads"
+            android:background="@null"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+
+    <!-- Collage preview -->
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/collageRecyclerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="250dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:clipToPadding="false"-->
+<!--        android:padding="8dp" />-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/collageRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:padding="8dp" />
+
+    <!-- Dynamic control area -->
+    <LinearLayout
+        android:id="@+id/controlSection"
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <!-- Layout Controls -->
+        <LinearLayout
+            android:id="@+id/layoutControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/layout2x6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:text="2x6"/>
+
+            <Button
+                android:id="@+id/layout3x3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:text="3x3"/>
+
+            <Button
+                android:id="@+id/layout4x2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:text="4x2"/>
+        </LinearLayout>
+
+        <!-- Background Controls -->
+        <LinearLayout
+            android:id="@+id/backgroundControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <View
+                android:id="@+id/color1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:background="#0288D1"/>
+
+            <View
+                android:id="@+id/color2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:background="#4CAF50"/>
+
+            <View
+                android:id="@+id/color3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:background="#FFEB3B"/>
+
+            <View
+                android:id="@+id/color4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:background="#F44336"/>
+        </LinearLayout>
+
+        <!-- Border Controls -->
+        <LinearLayout
+            android:id="@+id/borderControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Border Width"
+                android:gravity="center"/>
+
+            <SeekBar
+                android:id="@+id/borderWidthSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="20"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Corner Radius"
+                android:gravity="center"/>
+
+            <SeekBar
+                android:id="@+id/cornerRadiusSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Bottom navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:padding="5dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/layoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/layoutpc"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:textColor="@color/primary"
+                android:textSize="12dp"
+                android:text="Layout"
+                android:textAlignment="center"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/backgroundButton"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/backgroundpc"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:textColor="@color/primary"
+                android:textSize="12dp"
+                android:text="Background"
+                android:textAlignment="center"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/borderButton"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/borderpc"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:textColor="@color/primary"
+                android:textSize="12dp"
+                android:text="Border"
+                android:textAlignment="center"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
