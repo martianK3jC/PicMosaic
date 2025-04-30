@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Collage dimensions -->
+    <dimen name="collage_padding">8dp</dimen>
+</resources>

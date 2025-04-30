@@ -3,145 +3,95 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    >
+    android:padding="0dp"
+    android:background="@android:color/white">
 
-    <!-- wavy header -->
-    <ImageView
+    <!-- Top bar -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/wavyheader"
-        android:scaleType="fitXY"
-        />
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="56dp"
+        android:padding="12dp">
 
         <ImageButton
             android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_revert"
-            android:layout_gravity="start"
-            android:background="?android:attr/selectableItemBackground" />
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/back_button_developer"
+            android:background="@null"
+            android:layout_alignParentStart="true"/>
+    </RelativeLayout>
 
-        <!-- 2x3 Grid for Photos -->
-        <GridLayout
-            android:id="@+id/photo_grid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:rowCount="2"
-            android:columnCount="3"
-            android:layout_gravity="center"
-            android:layout_marginBottom="16dp">
+    <!-- Collage preview -->
+    <ImageView
+        android:id="@+id/collage_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:padding="@dimen/collage_padding"
+        android:clipToPadding="false"
+        android:adjustViewBounds="false" />
 
-            <ImageView
-                android:id="@+id/photo1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:scaleType="centerCrop" />
+    <!-- Share buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp">
 
-            <ImageView
-                android:id="@+id/photo2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:scaleType="centerCrop" />
+        <ImageButton
+            android:id="@+id/share_facebook"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/facebook_icon"
+            android:background="@null"
+            android:layout_margin="8dp"/>
 
-            <ImageView
-                android:id="@+id/photo3"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:scaleType="centerCrop" />
+        <ImageButton
+            android:id="@+id/share_instagram"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/instagram_icon"
+            android:background="@null"
+            android:layout_margin="8dp"/>
 
-            <ImageView
-                android:id="@+id/photo4"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:scaleType="centerCrop" />
+        <ImageButton
+            android:id="@+id/share_messenger"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/messenger_icon"
+            android:background="@null"
+            android:layout_margin="8dp"/>
 
-            <ImageView
-                android:id="@+id/photo5"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:scaleType="centerCrop" />
+        <ImageButton
+            android:id="@+id/open_more"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/more_icon"
+            android:background="@null"
+            android:layout_margin="8dp"/>
+    </LinearLayout>
 
-            <ImageView
-                android:id="@+id/photo6"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:scaleType="centerCrop" />
-        </GridLayout>
+    <!-- Action buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <!-- Share Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Share with your friends"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="16dp">
-
-            <ImageButton
-                android:id="@+id/share_facebook"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/facebook_icon"
-                android:layout_marginEnd="8dp"
-                android:background="?android:attr/selectableItemBackground" />
-
-            <ImageButton
-                android:id="@+id/share_instagram"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/instagram_icon"
-                android:layout_marginEnd="8dp"
-                android:background="?android:attr/selectableItemBackground" />
-
-            <ImageButton
-                android:id="@+id/share_snapchat"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/messenger_icon"
-                android:layout_marginEnd="8dp"
-                android:background="?android:attr/selectableItemBackground" />
-
-            <ImageButton
-                android:id="@+id/open_more"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/more_icon"
-                android:background="?android:attr/selectableItemBackground" />
-        </LinearLayout>
-
-        <!-- Save to Device Button -->
         <Button
             android:id="@+id/save_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save to device"
-            android:layout_marginBottom="8dp" />
+            android:text="Save to Gallery"
+            android:layout_marginBottom="8dp"/>
 
-        <!-- Create Another Button -->
         <Button
             android:id="@+id/create_another_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create another" />
-
+            android:text="Create Another Collage"/>
     </LinearLayout>
 
 </LinearLayout>

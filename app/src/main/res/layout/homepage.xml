@@ -62,7 +62,7 @@
 
 
             <ImageButton
-                android:id="@+id/button_createoutline"
+                android:id="@+id/create_collage_button"
                 android:layout_width="330dp"
                 android:layout_height="67dp"
                 android:layout_gravity="center"
