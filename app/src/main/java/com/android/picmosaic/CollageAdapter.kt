@@ -13,14 +13,21 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 
-class CollageAdapter(private val imageUris: MutableList<Uri>) : RecyclerView.Adapter<CollageAdapter.CollageViewHolder>() {
+class CollageAdapter(
+    private val imageUris: MutableList<Uri>,
+    private var onImageClickListener: ((Int) -> Unit)? = null
+) : RecyclerView.Adapter<CollageAdapter.CollageViewHolder>() {
 
     private var borderWidth = 8
     private var cornerRadius = 0
-    private var borderColor = Color.WHITE // Default border color
+    private var borderColor = Color.WHITE
     private var recyclerView: RecyclerView? = null
-    private var spanCount: Int = 3 // Default span count
-    private var layoutType: String = "grid" // Simplified to only "grid" with dynamic spanCount
+    private var spanCount: Int = 3
+    private var layoutType: String = "grid"
+
+    fun setOnImageClickListener(listener: (Int) -> Unit) {
+        this.onImageClickListener = listener
+    }
 
     fun setRecyclerView(recyclerView: RecyclerView) {
         this.recyclerView = recyclerView
@@ -50,21 +57,17 @@ class CollageAdapter(private val imageUris: MutableList<Uri>) : RecyclerView.Ada
     override fun onBindViewHolder(holder: CollageViewHolder, position: Int) {
         val uri = imageUris[position]
 
-        // Get RecyclerView dimensions
         val recyclerViewWidth = recyclerView?.width ?: 1080
         val recyclerViewHeight = recyclerView?.height ?: 1080
-        val scaleFactor = recyclerViewWidth.toFloat() / 1080f // Scale factor based on COLLAGE_WIDTH (1080)
+        val scaleFactor = recyclerViewWidth.toFloat() / 1080f
 
-        // Apply scaled border properties
         val scaledBorderWidth = (borderWidth * scaleFactor).toInt()
         val scaledCornerRadius = (cornerRadius * scaleFactor).toFloat()
 
-        // Calculate dimensions
-        val padding = (recyclerViewWidth * 0.02f).toInt() // 2% padding
+        val padding = (recyclerViewWidth * 0.02f).toInt()
         val availableWidth = recyclerViewWidth - 2 * padding
         val availableHeight = recyclerViewHeight - 2 * padding
 
-        // Determine spanCount based on photo count and layoutType
         val (columns, rows) = when (imageUris.size) {
             2 -> when (layoutType) {
                 "2x1" -> 2 to 1
@@ -97,7 +100,6 @@ class CollageAdapter(private val imageUris: MutableList<Uri>) : RecyclerView.Ada
             else -> spanCount to (imageUris.size + spanCount - 1) / spanCount
         }
 
-        // Calculate item dimensions based on the determined grid
         val itemWidth = availableWidth / columns
         val rowCount = rows
         val itemHeight = availableHeight / rowCount
@@ -107,14 +109,12 @@ class CollageAdapter(private val imageUris: MutableList<Uri>) : RecyclerView.Ada
         layoutParams.height = itemHeight
         holder.itemView.layoutParams = layoutParams
 
-        // Create a drawable with the specified corner radius and border color
         val drawable = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             setColor(borderColor)
             cornerRadius = scaledCornerRadius
         }
 
-        // Set padding as border
         holder.imageView.setPadding(
             scaledBorderWidth,
             scaledBorderWidth,
@@ -125,11 +125,14 @@ class CollageAdapter(private val imageUris: MutableList<Uri>) : RecyclerView.Ada
         holder.imageView.background = drawable
         holder.imageView.clipToOutline = true
 
-        // Load image with Glide maintaining aspect ratio
         Glide.with(holder.imageView.context)
             .load(uri)
             .apply(RequestOptions().centerCrop())
             .into(holder.imageView)
+
+        holder.imageView.setOnClickListener {
+            onImageClickListener?.invoke(position)
+        }
     }
 
     override fun getItemCount(): Int = imageUris.size

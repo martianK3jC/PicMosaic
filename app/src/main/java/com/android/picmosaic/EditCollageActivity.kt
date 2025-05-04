@@ -21,13 +21,14 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.picmosaic.utils.CollageConfig
 import androidx.recyclerview.widget.ItemTouchHelper
-import android.graphics.Matrix
-import androidx.core.view.setMargins
 import com.android.picmosaic.utils.ColorPickerDialog
+import java.io.File
+import java.io.FileOutputStream
 
 class EditCollageActivity : Activity() {
     private lateinit var layoutButton: ImageButton
@@ -35,6 +36,7 @@ class EditCollageActivity : Activity() {
     private lateinit var borderButton: ImageButton
     private lateinit var saveButton: ImageButton
     private lateinit var backButton: ImageButton
+    private lateinit var cropButton: Button
 
     private lateinit var layoutControls: LinearLayout
     private lateinit var backgroundControls: LinearLayout
@@ -55,9 +57,11 @@ class EditCollageActivity : Activity() {
     private var selectedUris: MutableList<Uri> = mutableListOf()
     private var spanCount = 3
     private var layoutType = "grid"
+    private var croppingPosition = -1
 
     private val COLLAGE_WIDTH = 1080
     private val COLLAGE_HEIGHT = 1080
+    private val CROP_REQUEST_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +69,6 @@ class EditCollageActivity : Activity() {
 
         selectedUris = (intent.getStringArrayListExtra("imageUris")?.map { Uri.parse(it) } ?: listOf()).toMutableList()
 
-        // Check photo count
         if (selectedUris.size > 6) {
             Toast.makeText(this, "Cannot create collage with more than 6 photos", Toast.LENGTH_LONG).show()
             finish()
@@ -78,7 +81,6 @@ class EditCollageActivity : Activity() {
         setupSeekBarListeners()
         setupLayoutControls()
 
-        // Set the default layout after initializing the RecyclerView and layouts
         setDefaultLayout()
     }
 
@@ -88,6 +90,7 @@ class EditCollageActivity : Activity() {
         borderButton = findViewById(R.id.borderButton)
         saveButton = findViewById(R.id.saveButton)
         backButton = findViewById(R.id.backButton)
+        cropButton = findViewById(R.id.cropButton)
 
         layoutControls = findViewById(R.id.layoutControls)
         backgroundControls = findViewById(R.id.backgroundControls)
@@ -108,11 +111,15 @@ class EditCollageActivity : Activity() {
             return
         }
 
-        adapter = CollageAdapter(selectedUris)
+        adapter = CollageAdapter(selectedUris).apply {
+            setOnImageClickListener { position ->
+                croppingPosition = position
+                startCropActivity(selectedUris[position])
+            }
+        }
         adapter.setBorderProperties(borderWidth.toInt(), cornerRadius.toInt(), borderColor)
         adapter.setRecyclerView(collageRecyclerView)
 
-        // Calculate available space
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val topBarHeight = 56
@@ -177,6 +184,35 @@ class EditCollageActivity : Activity() {
         itemTouchHelper.attachToRecyclerView(collageRecyclerView)
     }
 
+    private fun startCropActivity(uri: Uri) {
+        val intent = Intent(this, CropActivity::class.java).apply {
+            putExtra("image_uri", uri)
+        }
+        startActivityForResult(intent, CROP_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CROP_REQUEST_CODE && resultCode == RESULT_OK && croppingPosition != -1) {
+            try {
+                val croppedUri = data?.getParcelableExtra<Uri>("cropped_uri")
+                if (croppedUri != null) {
+                    selectedUris[croppingPosition] = croppedUri
+                    adapter.notifyItemChanged(croppingPosition)
+                } else {
+                    Toast.makeText(this, "No cropped image returned", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "Error retrieving cropped image", Toast.LENGTH_SHORT).show()
+            }
+            croppingPosition = -1
+        } else if (resultCode != RESULT_CANCELED) {
+            Toast.makeText(this, "Cropping failed", Toast.LENGTH_SHORT).show()
+            croppingPosition = -1
+        }
+    }
+
     private fun setupLayoutControls() {
         layoutControls.removeAllViews()
         val photoCount = selectedUris.size
@@ -216,7 +252,7 @@ class EditCollageActivity : Activity() {
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     1f
                 ).apply {
-                    setMargins(4)
+                    setMargins(4 ,4,4,4)
                 }
                 setOnClickListener {
                     spanCount = layout.spanCount
@@ -285,6 +321,10 @@ class EditCollageActivity : Activity() {
             showBorderControls()
         }
 
+        cropButton.setOnClickListener {
+            Toast.makeText(this, "Select an image to crop", Toast.LENGTH_SHORT).show()
+        }
+
         backButton.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Discard Changes")
@@ -337,8 +377,8 @@ class EditCollageActivity : Activity() {
     private fun updateColorPreview(previewView: View, color: Int) {
         val drawable = GradientDrawable()
         drawable.setShape(GradientDrawable.RECTANGLE)
-        drawable.setStroke(1, Color.GRAY) // Consistent 1dp gray border
-        drawable.setColor(color) // Set the selected color as the fill
+        drawable.setStroke(1, Color.GRAY)
+        drawable.setColor(color)
         previewView.background = drawable
     }
 

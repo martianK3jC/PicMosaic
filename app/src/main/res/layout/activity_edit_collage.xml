@@ -64,7 +64,6 @@
             android:gravity="center"
             android:visibility="gone">
 
-            <!-- Horizontal layout for predefined colors and color picker -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,7 +71,6 @@
                 android:gravity="center"
                 android:padding="8dp">
 
-                <!-- Predefined Color Options -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -108,7 +106,6 @@
                         android:background="#F44336"/>
                 </LinearLayout>
 
-                <!-- Background Color Picker -->
                 <View
                     android:id="@+id/backgroundColorPreview"
                     android:layout_width="70dp"
@@ -127,7 +124,6 @@
             android:orientation="horizontal"
             android:gravity="center_horizontal">
 
-            <!-- Border Color Controls -->
             <LinearLayout
                 android:id="@+id/borderColorControls"
                 android:layout_width="0dp"
@@ -153,7 +149,6 @@
                     android:layout_weight="1"/>
             </LinearLayout>
 
-            <!-- Border Width and Radius Controls -->
             <LinearLayout
                 android:id="@+id/borderControls"
                 android:layout_width="0dp"
@@ -216,7 +211,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:textColor="@color/primary"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:text="Layout"
                 android:textAlignment="center"
                 android:layout_height="match_parent"/>
@@ -224,7 +219,6 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_gravity="center_horizontal"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -239,7 +233,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:textColor="@color/primary"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:text="Background"
                 android:textAlignment="center"
                 android:layout_height="match_parent"/>
@@ -261,8 +255,31 @@
             <TextView
                 android:layout_width="match_parent"
                 android:textColor="@color/primary"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:text="Border"
+                android:textAlignment="center"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/cropButton"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:backgroundTint="@color/white"
+                android:text="Crop"
+                android:textColor="@color/primary"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
+                android:text="Crop"
                 android:textAlignment="center"
                 android:layout_height="match_parent"/>
         </LinearLayout>
