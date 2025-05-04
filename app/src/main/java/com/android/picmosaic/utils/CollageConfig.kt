@@ -6,36 +6,35 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class CollageConfig(
-    val imageUris: List<String>, // List of URI strings (since Uri isn't Parcelable directly)
+    val imageUris: List<String>,
     val spanCount: Int,
     val borderWidth: Float,
     val cornerRadius: Float,
-    val backgroundColor: Int
+    val backgroundColor: Int,
+    val borderColor: Int = Color.WHITE // Add borderColor with default value
 ) : Parcelable {
-    fun getUris(): List<Uri> = imageUris.map { Uri.parse(it) }
-
-    // Constructor for reading from a Parcel
     constructor(parcel: Parcel) : this(
-        imageUris = parcel.createStringArrayList() ?: listOf(),
-        spanCount = parcel.readInt(),
-        borderWidth = parcel.readFloat(),
-        cornerRadius = parcel.readFloat(),
-        backgroundColor = parcel.readInt()
+        parcel.createStringArrayList() ?: emptyList(),
+        parcel.readInt(),
+        parcel.readFloat(),
+        parcel.readFloat(),
+        parcel.readInt(),
+        parcel.readInt() // Read borderColor
     )
 
-    // Write the object's data to a Parcel
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeStringList(imageUris)
         parcel.writeInt(spanCount)
         parcel.writeFloat(borderWidth)
         parcel.writeFloat(cornerRadius)
         parcel.writeInt(backgroundColor)
+        parcel.writeInt(borderColor) // Write borderColor
     }
 
-    // Describe the kinds of special objects contained in this Parcelable (none in this case)
     override fun describeContents(): Int = 0
 
-    // Companion object with CREATOR for creating instances from a Parcel
+    fun getUris(): List<Uri> = imageUris.map { Uri.parse(it) }
+
     companion object CREATOR : Parcelable.Creator<CollageConfig> {
         override fun createFromParcel(parcel: Parcel): CollageConfig {
             return CollageConfig(parcel)
