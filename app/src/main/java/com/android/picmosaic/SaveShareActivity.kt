@@ -1,4 +1,5 @@
 package com.android.picmosaic
+
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -137,9 +138,9 @@ class SaveShareActivity : Activity() {
                     canvas.save()
                     canvas.clipPath(itemPath)
 
-                    // Draw white border background
+                    // Draw border background with selected border color
                     val paint = Paint().apply {
-                        color = Color.WHITE
+                        color = config.borderColor // Use borderColor from config
                         style = Paint.Style.FILL
                     }
                     canvas.drawRect(itemRect, paint)
@@ -228,7 +229,7 @@ class SaveShareActivity : Activity() {
         shareFacebook.setOnClickListener { shareToApp("com.facebook.katana") }
         shareInstagram.setOnClickListener { shareToApp("com.instagram.android") }
         shareMessenger.setOnClickListener { shareToApp("com.facebook.orca") }
-        openMore.setOnClickListener { showShareSheet() } // Updated to show share sheet
+        openMore.setOnClickListener { showShareSheet() }
         saveButton.setOnClickListener { saveCollage() }
         createAnotherButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)

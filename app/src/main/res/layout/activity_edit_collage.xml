@@ -29,21 +29,12 @@
     </RelativeLayout>
 
     <!-- Collage preview -->
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/collageRecyclerView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="250dp"-->
-<!--        android:layout_weight="1"-->
-<!--        android:clipToPadding="false"-->
-<!--        android:padding="8dp" />-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/collageRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:clipToPadding="false"
-        android:padding="8dp" />
+        android:clipToPadding="false" />
 
     <!-- Dynamic control area -->
     <LinearLayout
@@ -61,30 +52,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:visibility="gone">
-
-            <Button
-                android:id="@+id/layout2x6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="4dp"
-                android:text="2x6"/>
-
-            <Button
-                android:id="@+id/layout3x3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="4dp"
-                android:text="3x3"/>
-
-            <Button
-                android:id="@+id/layout4x2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="4dp"
-                android:text="4x2"/>
+            <!-- Buttons will be added dynamically -->
         </LinearLayout>
 
         <!-- Background Controls -->
@@ -92,71 +60,135 @@
             android:id="@+id/backgroundControls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:gravity="center"
             android:visibility="gone">
 
-            <View
-                android:id="@+id/color1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="8dp"
-                android:background="#0288D1"/>
+            <!-- Horizontal layout for predefined colors and color picker -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp">
 
-            <View
-                android:id="@+id/color2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="8dp"
-                android:background="#4CAF50"/>
+                <!-- Predefined Color Options -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
-            <View
-                android:id="@+id/color3"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="8dp"
-                android:background="#FFEB3B"/>
+                    <View
+                        android:id="@+id/color1"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:background="#0288D1"/>
 
-            <View
-                android:id="@+id/color4"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="8dp"
-                android:background="#F44336"/>
+                    <View
+                        android:id="@+id/color2"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:background="#4CAF50"/>
+
+                    <View
+                        android:id="@+id/color3"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:background="#FFEB3B"/>
+
+                    <View
+                        android:id="@+id/color4"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:background="#F44336"/>
+                </LinearLayout>
+
+                <!-- Background Color Picker -->
+                <View
+                    android:id="@+id/backgroundColorPreview"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/border_thin"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Border Controls -->
+        <!-- Combined Border Controls -->
         <LinearLayout
-            android:id="@+id/borderControls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:visibility="gone">
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
+            <!-- Border Color Controls -->
+            <LinearLayout
+                android:id="@+id/borderColorControls"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Border Width"
-                android:gravity="center"/>
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp"
+                android:visibility="gone">
 
-            <SeekBar
-                android:id="@+id/borderWidthSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="20"/>
+                <View
+                    android:id="@+id/borderColorPreview"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/border_thin"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Corner Radius"
-                android:gravity="center"/>
+                <View
+                    android:layout_width="90dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
 
-            <SeekBar
-                android:id="@+id/cornerRadiusSeekBar"
-                android:layout_width="match_parent"
+            <!-- Border Width and Radius Controls -->
+            <LinearLayout
+                android:id="@+id/borderControls"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:max="100"/>
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Border Width"
+                    android:gravity="center"
+                    android:textSize="12sp"/>
+
+                <SeekBar
+                    android:id="@+id/borderWidthSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="20"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Corner Radius"
+                    android:gravity="center"
+                    android:textSize="12sp"/>
+
+                <SeekBar
+                    android:id="@+id/cornerRadiusSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -234,8 +266,5 @@
                 android:textAlignment="center"
                 android:layout_height="match_parent"/>
         </LinearLayout>
-
-
     </LinearLayout>
-
 </LinearLayout>

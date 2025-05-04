@@ -13,22 +13,21 @@ import android.graphics.RectF
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.core.content.FileProvider
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.picmosaic.utils.CollageConfig
-import java.io.File
-import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.ItemTouchHelper
+import android.graphics.Matrix
+import androidx.core.view.setMargins
+import com.android.picmosaic.utils.ColorPickerDialog
 
 class EditCollageActivity : Activity() {
     private lateinit var layoutButton: ImageButton
@@ -40,40 +39,47 @@ class EditCollageActivity : Activity() {
     private lateinit var layoutControls: LinearLayout
     private lateinit var backgroundControls: LinearLayout
     private lateinit var borderControls: LinearLayout
+    private lateinit var borderColorControls: LinearLayout
 
     private lateinit var borderWidthSeekBar: SeekBar
     private lateinit var cornerRadiusSeekBar: SeekBar
+    private lateinit var borderColorPreview: View
+    private lateinit var backgroundColorPreview: View
     private lateinit var collageRecyclerView: RecyclerView
     private lateinit var adapter: CollageAdapter
 
     private var borderWidth = 8f
     private var cornerRadius = 0f
-    private var backgroundColor = Color.WHITE //The container. should we change color?
-    private var selectedUris: List<Uri> = listOf()
-    private var spanCount = 3 // Default span count (3x3 grid)
+    private var borderColor = Color.WHITE
+    private var backgroundColor = Color.WHITE
+    private var selectedUris: MutableList<Uri> = mutableListOf()
+    private var spanCount = 3
+    private var layoutType = "grid"
 
-    // Fixed dimensions for output image - use the same for preview and final output
-    private val COLLAGE_WIDTH = 1080 // Standard width for modern phones
-    private val COLLAGE_HEIGHT = 1080 // Square aspect ratio
+    private val COLLAGE_WIDTH = 1080
+    private val COLLAGE_HEIGHT = 1080
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_collage)
 
-        // Get selected images from intent
-        selectedUris = intent.getStringArrayListExtra("imageUris")?.map { Uri.parse(it) } ?: listOf()
+        selectedUris = (intent.getStringArrayListExtra("imageUris")?.map { Uri.parse(it) } ?: listOf()).toMutableList()
 
-        // Initialize views
+        // Check photo count
+        if (selectedUris.size > 6) {
+            Toast.makeText(this, "Cannot create collage with more than 6 photos", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
         initializeViews()
-
-        // Set up RecyclerView
         setupRecyclerView()
-
-        // Set up click listeners
         setupClickListeners()
-
-        // Set up seek bar listeners
         setupSeekBarListeners()
+        setupLayoutControls()
+
+        // Set the default layout after initializing the RecyclerView and layouts
+        setDefaultLayout()
     }
 
     private fun initializeViews() {
@@ -86,63 +92,195 @@ class EditCollageActivity : Activity() {
         layoutControls = findViewById(R.id.layoutControls)
         backgroundControls = findViewById(R.id.backgroundControls)
         borderControls = findViewById(R.id.borderControls)
+        borderColorControls = findViewById(R.id.borderColorControls)
 
         borderWidthSeekBar = findViewById(R.id.borderWidthSeekBar)
         cornerRadiusSeekBar = findViewById(R.id.cornerRadiusSeekBar)
+        borderColorPreview = findViewById(R.id.borderColorPreview)
+        backgroundColorPreview = findViewById(R.id.backgroundColorPreview)
 
         collageRecyclerView = findViewById(R.id.collageRecyclerView)
     }
 
-    // Modify setupRecyclerView() to ensure a consistent square preview
     private fun setupRecyclerView() {
-        // Validate selectedUris
         if (selectedUris.isEmpty()) {
             Toast.makeText(this, "No images selected to display", Toast.LENGTH_LONG).show()
             return
         }
 
-        // Initialize adapter with current border properties
-        adapter = CollageAdapter(selectedUris).apply {
-            setBorderProperties(borderWidth.toInt(), cornerRadius.toInt())
-        }
+        adapter = CollageAdapter(selectedUris)
+        adapter.setBorderProperties(borderWidth.toInt(), cornerRadius.toInt(), borderColor)
+        adapter.setRecyclerView(collageRecyclerView)
 
-        // Set exact dimensions to match the output aspect ratio
-        val params = collageRecyclerView.layoutParams
+        // Calculate available space
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
+        val topBarHeight = 56
+        val controlSectionHeight = 125
+        val bottomNavHeight = 90
+        val density = displayMetrics.density
+        val totalFixedHeightPx = (topBarHeight + controlSectionHeight + bottomNavHeight) * density
+        val screenHeight = displayMetrics.heightPixels
+        val availableHeight = screenHeight - totalFixedHeightPx
+        val recyclerViewSize = minOf(screenWidth, availableHeight.toInt())
 
-        // Make it exactly square to match our COLLAGE_WIDTH and COLLAGE_HEIGHT (which are equal)
-        params.width = screenWidth
-        params.height = screenWidth // Square aspect ratio
+        val params = collageRecyclerView.layoutParams
+        params.width = recyclerViewSize
+        params.height = recyclerViewSize
         collageRecyclerView.layoutParams = params
 
-        // Apply background color
-        collageRecyclerView.setBackgroundColor(backgroundColor)
+        val scaleFactor = recyclerViewSize.toFloat() / COLLAGE_WIDTH.toFloat()
+        val padding = (COLLAGE_WIDTH * 0.02f * scaleFactor).toInt()
+        collageRecyclerView.setPadding(padding, padding, padding, padding)
+        collageRecyclerView.clipToPadding = false
 
-        // Setup adapter and layout manager
+        collageRecyclerView.setBackgroundColor(backgroundColor)
         collageRecyclerView.adapter = adapter
         collageRecyclerView.layoutManager = GridLayoutManager(this, spanCount)
         collageRecyclerView.visibility = View.VISIBLE
+
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
+            0
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val fromPosition = viewHolder.adapterPosition
+                val toPosition = target.adapterPosition
+                adapter.swapItems(fromPosition, toPosition)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+
+            override fun isLongPressDragEnabled(): Boolean = true
+
+            override fun isItemViewSwipeEnabled(): Boolean = false
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.7f
+                }
+            }
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                viewHolder.itemView.alpha = 1.0f
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(collageRecyclerView)
+    }
+
+    private fun setupLayoutControls() {
+        layoutControls.removeAllViews()
+        val photoCount = selectedUris.size
+
+        val layouts = when (photoCount) {
+            2 -> listOf(
+                LayoutOption("2x1", 2, "2x1"),
+                LayoutOption("1x2", 1, "1x2")
+            )
+            3 -> listOf(
+                LayoutOption("3x1", 3, "3x1"),
+                LayoutOption("1x3", 1, "1x3")
+            )
+            4 -> listOf(
+                LayoutOption("2x2", 2, "2x2"),
+                LayoutOption("4x1", 4, "4x1"),
+                LayoutOption("1x4", 1, "1x4")
+            )
+            5 -> listOf(
+                LayoutOption("5x1", 5, "5x1"),
+                LayoutOption("1x5", 1, "1x5"),
+                LayoutOption("2x3", 2, "2x3")
+            )
+            6 -> listOf(
+                LayoutOption("3x2", 3, "3x2"),
+                LayoutOption("2x3", 2, "2x3"),
+                LayoutOption("1x6", 1, "1x6")
+            )
+            else -> listOf()
+        }
+
+        layouts.forEach { layout ->
+            val button = Button(this).apply {
+                text = layout.label
+                layoutParams = LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
+                ).apply {
+                    setMargins(4)
+                }
+                setOnClickListener {
+                    spanCount = layout.spanCount
+                    layoutType = layout.type
+                    collageRecyclerView.layoutManager = GridLayoutManager(this@EditCollageActivity, spanCount)
+                    adapter.setLayoutType(layout.type)
+                }
+            }
+            layoutControls.addView(button)
+        }
+    }
+
+    private fun setDefaultLayout() {
+        val photoCount = selectedUris.size
+        val layouts = when (photoCount) {
+            2 -> listOf(
+                LayoutOption("2x1", 2, "2x1"),
+                LayoutOption("1x2", 1, "1x2")
+            )
+            3 -> listOf(
+                LayoutOption("3x1", 3, "3x1"),
+                LayoutOption("1x3", 1, "1x3")
+            )
+            4 -> listOf(
+                LayoutOption("2x2", 2, "2x2"),
+                LayoutOption("4x1", 4, "4x1"),
+                LayoutOption("1x4", 1, "1x4")
+            )
+            5 -> listOf(
+                LayoutOption("5x1", 5, "5x1"),
+                LayoutOption("1x5", 1, "1x5"),
+                LayoutOption("2x3", 2, "2x3")
+            )
+            6 -> listOf(
+                LayoutOption("3x2", 3, "3x2"),
+                LayoutOption("2x3", 2, "2x3"),
+                LayoutOption("1x6", 1, "1x6")
+            )
+            else -> listOf()
+        }
+
+        if (layouts.isNotEmpty()) {
+            val defaultLayout = layouts[0]
+            spanCount = defaultLayout.spanCount
+            layoutType = defaultLayout.type
+            collageRecyclerView.layoutManager = GridLayoutManager(this, spanCount)
+            adapter.setLayoutType(layoutType)
+        }
     }
 
     private fun setupClickListeners() {
-        // Layout button click listener
         layoutButton.setOnClickListener {
             showLayoutControls()
         }
 
-        // Save button click listener
         saveButton.setOnClickListener {
             val collageBitmap = createCollageBitmap()
             navigateToSaveShareActivity()
         }
 
-        // Background button click listener
         backgroundButton.setOnClickListener {
             showBackgroundControls()
         }
 
-        // Border button click listener
         borderButton.setOnClickListener {
             showBorderControls()
         }
@@ -161,20 +299,6 @@ class EditCollageActivity : Activity() {
                 .show()
         }
 
-        // Layout format buttons
-        findViewById<View>(R.id.layout2x6).setOnClickListener {
-            updateLayoutSpanCount(2)
-        }
-
-        findViewById<View>(R.id.layout3x3).setOnClickListener {
-            updateLayoutSpanCount(3)
-        }
-
-        findViewById<View>(R.id.layout4x2).setOnClickListener {
-            updateLayoutSpanCount(4)
-        }
-
-        // Background color buttons. will change this to the color wheel/color picker. with buttons that has default colors but can be updated when we choose a color in the color wheel
         val colorViews = listOf(
             findViewById<View>(R.id.color1),
             findViewById<View>(R.id.color2),
@@ -186,16 +310,58 @@ class EditCollageActivity : Activity() {
             view.setOnClickListener {
                 val colors = listOf("#0288D1", "#4CAF50", "#FFEB3B", "#F44336")
                 backgroundColor = Color.parseColor(colors[index])
+                updateColorPreview(backgroundColorPreview, backgroundColor)
                 collageRecyclerView.setBackgroundColor(backgroundColor)
             }
         }
+
+        backgroundColorPreview.setOnClickListener {
+            val dialog = ColorPickerDialog(this, backgroundColor) { color ->
+                backgroundColor = color
+                updateColorPreview(backgroundColorPreview, backgroundColor)
+                collageRecyclerView.setBackgroundColor(backgroundColor)
+            }
+            dialog.show()
+        }
+
+        borderColorPreview.setOnClickListener {
+            val dialog = ColorPickerDialog(this, borderColor) { color ->
+                borderColor = color
+                updateColorPreview(borderColorPreview, borderColor)
+                adapter.setBorderProperties(borderWidth.toInt(), cornerRadius.toInt(), borderColor)
+            }
+            dialog.show()
+        }
+    }
+
+    private fun updateColorPreview(previewView: View, color: Int) {
+        val drawable = GradientDrawable()
+        drawable.setShape(GradientDrawable.RECTANGLE)
+        drawable.setStroke(1, Color.GRAY) // Consistent 1dp gray border
+        drawable.setColor(color) // Set the selected color as the fill
+        previewView.background = drawable
     }
 
     private fun setupSeekBarListeners() {
         borderWidthSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 borderWidth = progress.toFloat()
-                adapter.setBorderProperties(borderWidth.toInt(), cornerRadius.toInt())
+
+                val displayMetrics = resources.displayMetrics
+                val screenWidth = displayMetrics.widthPixels
+                val topBarHeight = 56
+                val controlSectionHeight = 125
+                val bottomNavHeight = 90
+                val density = displayMetrics.density
+                val totalFixedHeightPx = (topBarHeight + controlSectionHeight + bottomNavHeight) * density
+                val screenHeight = displayMetrics.heightPixels
+                val availableHeight = screenHeight - totalFixedHeightPx
+                val recyclerViewSize = minOf(screenWidth, availableHeight.toInt())
+                val scaleFactor = recyclerViewSize.toFloat() / COLLAGE_WIDTH.toFloat()
+
+                val scaledBorderWidth = (borderWidth * scaleFactor).toInt()
+                val scaledCornerRadius = (cornerRadius * scaleFactor).toInt()
+                adapter.setBorderProperties(scaledBorderWidth, scaledCornerRadius, borderColor)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -206,7 +372,22 @@ class EditCollageActivity : Activity() {
         cornerRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 cornerRadius = progress.toFloat()
-                adapter.setBorderProperties(borderWidth.toInt(), cornerRadius.toInt())
+
+                val displayMetrics = resources.displayMetrics
+                val screenWidth = displayMetrics.widthPixels
+                val topBarHeight = 56
+                val controlSectionHeight = 125
+                val bottomNavHeight = 90
+                val density = displayMetrics.density
+                val totalFixedHeightPx = (topBarHeight + controlSectionHeight + bottomNavHeight) * density
+                val screenHeight = displayMetrics.heightPixels
+                val availableHeight = screenHeight - totalFixedHeightPx
+                val recyclerViewSize = minOf(screenWidth, availableHeight.toInt())
+                val scaleFactor = recyclerViewSize.toFloat() / COLLAGE_WIDTH.toFloat()
+
+                val scaledBorderWidth = (borderWidth * scaleFactor).toInt()
+                val scaledCornerRadius = (cornerRadius * scaleFactor).toInt()
+                adapter.setBorderProperties(scaledBorderWidth, scaledCornerRadius, borderColor)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -219,44 +400,36 @@ class EditCollageActivity : Activity() {
         layoutControls.visibility = View.VISIBLE
         backgroundControls.visibility = View.GONE
         borderControls.visibility = View.GONE
+        borderColorControls.visibility = View.GONE
     }
 
     private fun showBackgroundControls() {
         layoutControls.visibility = View.GONE
         backgroundControls.visibility = View.VISIBLE
         borderControls.visibility = View.GONE
+        borderColorControls.visibility = View.GONE
     }
 
     private fun showBorderControls() {
         layoutControls.visibility = View.GONE
         backgroundControls.visibility = View.GONE
         borderControls.visibility = View.VISIBLE
-    }
-
-    private fun updateLayoutSpanCount(spanCount: Int) {
-        this.spanCount = spanCount
-        collageRecyclerView.layoutManager = GridLayoutManager(this, spanCount)
+        borderColorControls.visibility = View.VISIBLE
     }
 
     private fun createCollageBitmap(): Bitmap {
-        // Create bitmap with fixed dimensions
         val bitmap = Bitmap.createBitmap(COLLAGE_WIDTH, COLLAGE_HEIGHT, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-
-        // Draw background
         canvas.drawColor(backgroundColor)
 
-        // Calculate proper dimensions
-        val padding = (bitmap.width * 0.02f).toInt() // 2% padding
+        val padding = (bitmap.width * 0.02f).toInt()
         val availableWidth = bitmap.width - 2 * padding
         val availableHeight = bitmap.height - 2 * padding
 
-        // Calculate grid dimensions
         val itemWidth = availableWidth / spanCount
         val rowCount = (selectedUris.size + spanCount - 1) / spanCount
         val itemHeight = if (rowCount > 0) availableHeight / rowCount else availableHeight
 
-        // Draw each image with proper styling
         for (i in selectedUris.indices) {
             try {
                 val column = i % spanCount
@@ -267,23 +440,19 @@ class EditCollageActivity : Activity() {
                 val right = left + itemWidth
                 val bottom = top + itemHeight
 
-                // Create item shape with rounded corners (same as in preview)
                 val itemPath = Path()
                 val itemRect = RectF(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
                 itemPath.addRoundRect(itemRect, cornerRadius, cornerRadius, Path.Direction.CW)
 
-                // Save canvas state and apply clipping
                 canvas.save()
                 canvas.clipPath(itemPath)
 
-                // Draw white border background
                 val paint = Paint().apply {
-                    color = Color.WHITE
+                    color = borderColor
                     style = Paint.Style.FILL
                 }
                 canvas.drawRect(itemRect, paint)
 
-                // Apply the same border width as in the preview
                 val borderRect = RectF(
                     left + borderWidth,
                     top + borderWidth,
@@ -291,33 +460,24 @@ class EditCollageActivity : Activity() {
                     bottom - borderWidth
                 )
 
-                // Create clipping path for the image area
                 val borderPath = Path()
                 borderPath.addRoundRect(borderRect, cornerRadius, cornerRadius, Path.Direction.CW)
-
-                // Apply clipping to keep image within borders
                 canvas.clipPath(borderPath)
 
-                // Load the image - will use centerCrop style like in the adapter
                 val inputStream = contentResolver.openInputStream(selectedUris[i])
                 val imageBitmap = BitmapFactory.decodeStream(inputStream)
                 inputStream?.close()
 
                 if (imageBitmap != null) {
-                    // Apply centerCrop logic manually to match preview
                     val imageWidth = imageBitmap.width.toFloat()
                     val imageHeight = imageBitmap.height.toFloat()
                     val imageAspect = imageWidth / imageHeight
-
-                    val borderWidth = borderRect.width()
-                    val borderHeight = borderRect.height()
-                    val borderAspect = borderWidth / borderHeight
+                    val borderAspect = borderRect.width() / borderRect.height()
 
                     val srcRect: Rect
                     val dstRect = RectF(borderRect)
 
                     if (imageAspect > borderAspect) {
-                        // Image is wider than cell - crop width
                         val newWidth = imageHeight * borderAspect
                         val xOffset = (imageWidth - newWidth) / 2
                         srcRect = Rect(
@@ -327,7 +487,6 @@ class EditCollageActivity : Activity() {
                             imageHeight.toInt()
                         )
                     } else {
-                        // Image is taller than cell - crop height
                         val newHeight = imageWidth / borderAspect
                         val yOffset = (imageHeight - newHeight) / 2
                         srcRect = Rect(
@@ -338,17 +497,9 @@ class EditCollageActivity : Activity() {
                         )
                     }
 
-                    // Draw the bitmap with center crop applied
-                    canvas.drawBitmap(
-                        imageBitmap,
-                        srcRect,
-                        dstRect,
-                        null
-                    )
+                    canvas.drawBitmap(imageBitmap, srcRect, dstRect, null)
                     imageBitmap.recycle()
                 }
-
-                // Restore canvas state
                 canvas.restore()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -357,38 +508,6 @@ class EditCollageActivity : Activity() {
         return bitmap
     }
 
-    // Calculate destination rectangle to maintain aspect ratio
-    private fun calculateDestRect(imageAspect: Float, containerRect: RectF): RectF {
-        val containerWidth = containerRect.width()
-        val containerHeight = containerRect.height()
-        val containerAspect = containerWidth / containerHeight
-
-        var destWidth: Float
-        var destHeight: Float
-
-        if (imageAspect > containerAspect) {
-            // Image is wider than container - fit width
-            destWidth = containerWidth
-            destHeight = destWidth / imageAspect
-        } else {
-            // Image is taller than container - fit height
-            destHeight = containerHeight
-            destWidth = destHeight * imageAspect
-        }
-
-        // Center the image in the container
-        val destLeft = containerRect.left + (containerWidth - destWidth) / 2
-        val destTop = containerRect.top + (containerHeight - destHeight) / 2
-
-        return RectF(
-            destLeft,
-            destTop,
-            destLeft + destWidth,
-            destTop + destHeight
-        )
-    }
-
-
     private fun navigateToSaveShareActivity() {
         try {
             val config = CollageConfig(
@@ -396,7 +515,8 @@ class EditCollageActivity : Activity() {
                 spanCount = spanCount,
                 borderWidth = borderWidth,
                 cornerRadius = cornerRadius,
-                backgroundColor = backgroundColor
+                backgroundColor = backgroundColor,
+                borderColor = borderColor
             )
 
             val intent = Intent(this, SaveShareActivity::class.java).apply {
@@ -408,4 +528,6 @@ class EditCollageActivity : Activity() {
             Toast.makeText(this, "Error navigating to SaveShare: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
+
+    private data class LayoutOption(val label: String, val spanCount: Int, val type: String)
 }
