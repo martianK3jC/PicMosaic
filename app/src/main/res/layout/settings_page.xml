@@ -54,12 +54,6 @@
                         android:textColor="@color/white"
                         android:textSize="30sp" />
 
-                    <ImageButton
-                        android:id="@+id/settings_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/light_settings_icon"
-                        android:background="@android:color/transparent" />
                 </LinearLayout>
 
                 <!-- Profile Picture Section -->

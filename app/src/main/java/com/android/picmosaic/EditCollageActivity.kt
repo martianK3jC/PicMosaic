@@ -36,7 +36,7 @@ class EditCollageActivity : Activity() {
     private lateinit var borderButton: ImageButton
     private lateinit var saveButton: ImageButton
     private lateinit var backButton: ImageButton
-    private lateinit var cropButton: Button
+    private lateinit var cropButton: ImageButton
 
     private lateinit var layoutControls: LinearLayout
     private lateinit var backgroundControls: LinearLayout
@@ -55,6 +55,7 @@ class EditCollageActivity : Activity() {
     private var borderColor = Color.WHITE
     private var backgroundColor = Color.WHITE
     private var selectedUris: MutableList<Uri> = mutableListOf()
+    private var originalUris: MutableList<Uri> = mutableListOf() // Store original URIs
     private var spanCount = 3
     private var layoutType = "grid"
     private var croppingPosition = -1
@@ -68,6 +69,7 @@ class EditCollageActivity : Activity() {
         setContentView(R.layout.activity_edit_collage)
 
         selectedUris = (intent.getStringArrayListExtra("imageUris")?.map { Uri.parse(it) } ?: listOf()).toMutableList()
+        originalUris = selectedUris.toMutableList() // Initialize original URIs
 
         if (selectedUris.size > 6) {
             Toast.makeText(this, "Cannot create collage with more than 6 photos", Toast.LENGTH_LONG).show()
@@ -111,10 +113,10 @@ class EditCollageActivity : Activity() {
             return
         }
 
-        adapter = CollageAdapter(selectedUris).apply {
+        adapter = CollageAdapter(selectedUris, originalUris).apply {
             setOnImageClickListener { position ->
                 croppingPosition = position
-                startCropActivity(selectedUris[position])
+                startCropActivity(originalUris[position]) // Use original URI for cropping
             }
         }
         adapter.setBorderProperties(borderWidth.toInt(), cornerRadius.toInt(), borderColor)
@@ -252,7 +254,7 @@ class EditCollageActivity : Activity() {
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     1f
                 ).apply {
-                    setMargins(4 ,4,4,4)
+                    setMargins(4, 4, 4, 4)
                 }
                 setOnClickListener {
                     spanCount = layout.spanCount
