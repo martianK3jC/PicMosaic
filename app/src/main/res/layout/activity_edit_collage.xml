@@ -266,14 +266,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
-            <Button
+            <ImageButton
                 android:id="@+id/cropButton"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:backgroundTint="@color/white"
-                android:text="Crop"
-                android:textColor="@color/primary"
-                android:textSize="16sp"/>
+                android:src="@drawable/ic_crop"
+                android:scaleType="fitCenter"/>
 
             <TextView
                 android:layout_width="match_parent"

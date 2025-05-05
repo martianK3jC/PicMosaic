@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 
 class CollageAdapter(
     private val imageUris: MutableList<Uri>,
+    private val originalUris: MutableList<Uri>, // Add original URIs
     private var onImageClickListener: ((Int) -> Unit)? = null
 ) : RecyclerView.Adapter<CollageAdapter.CollageViewHolder>() {
 
@@ -54,7 +55,7 @@ class CollageAdapter(
         return CollageViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: CollageViewHolder, position: Int) {
+    override fun onBindViewHolder( holder: CollageViewHolder, position: Int) {
         val uri = imageUris[position]
 
         val recyclerViewWidth = recyclerView?.width ?: 1080
@@ -138,9 +139,16 @@ class CollageAdapter(
     override fun getItemCount(): Int = imageUris.size
 
     fun swapItems(fromPosition: Int, toPosition: Int) {
-        val temp = imageUris[fromPosition]
+        // Swap imageUris
+        val tempImage = imageUris[fromPosition]
         imageUris[fromPosition] = imageUris[toPosition]
-        imageUris[toPosition] = temp
+        imageUris[toPosition] = tempImage
+
+        // Swap originalUris
+        val tempOriginal = originalUris[fromPosition]
+        originalUris[fromPosition] = originalUris[toPosition]
+        originalUris[toPosition] = tempOriginal
+
         notifyItemMoved(fromPosition, toPosition)
 
         recyclerView?.let { rv ->
@@ -149,9 +157,16 @@ class CollageAdapter(
                 "Moved image",
                 Snackbar.LENGTH_LONG
             ).setAction("Undo") {
-                val temp = imageUris[fromPosition]
+                // Undo swap for imageUris
+                val tempImage = imageUris[fromPosition]
                 imageUris[fromPosition] = imageUris[toPosition]
-                imageUris[toPosition] = temp
+                imageUris[toPosition] = tempImage
+
+                // Undo swap for originalUris
+                val tempOriginal = originalUris[fromPosition]
+                originalUris[fromPosition] = originalUris[toPosition]
+                originalUris[toPosition] = tempOriginal
+
                 notifyItemMoved(toPosition, fromPosition)
             }.show()
         }

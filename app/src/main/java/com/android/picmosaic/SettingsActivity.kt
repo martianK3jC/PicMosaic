@@ -26,7 +26,6 @@ class SettingsActivity : Activity() {
         }
 
         developersButton.setOnClickListener {
-            Toast.makeText(this, "Developers Page", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, DevelopersActivity::class.java)
             startActivity(intent)
         }
@@ -34,7 +33,6 @@ class SettingsActivity : Activity() {
         val buttonBack = findViewById<ImageButton>(R.id.arrow_back_button)
         buttonBack.setOnClickListener {
             Log.e("Back", "Going Back")
-            Toast.makeText(this, "Button is clicked", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
