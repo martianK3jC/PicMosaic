@@ -58,10 +58,6 @@
             android:name=".DevelopersActivity"
             android:exported="false" />
         <activity
-            android:name=".LogoutDialog"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".ProfileActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

@@ -19,6 +19,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
@@ -29,6 +30,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.android.picmosaic.utils.ColorPickerDialog
 import java.io.File
 import java.io.FileOutputStream
+import com.google.android.material.button.MaterialButton
+import android.widget.ImageView
 
 class EditCollageActivity : Activity() {
     private lateinit var layoutButton: ImageButton
@@ -41,8 +44,6 @@ class EditCollageActivity : Activity() {
     private lateinit var layoutControls: LinearLayout
     private lateinit var backgroundControls: LinearLayout
     private lateinit var borderControls: LinearLayout
-    private lateinit var borderColorControls: LinearLayout
-
     private lateinit var borderWidthSeekBar: SeekBar
     private lateinit var cornerRadiusSeekBar: SeekBar
     private lateinit var borderColorPreview: View
@@ -64,6 +65,8 @@ class EditCollageActivity : Activity() {
     private val COLLAGE_HEIGHT = 1080
     private val CROP_REQUEST_CODE = 1001
 
+    private var selectedLayoutType: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_collage)
@@ -82,7 +85,7 @@ class EditCollageActivity : Activity() {
         setupClickListeners()
         setupSeekBarListeners()
         setupLayoutControls()
-
+        showLayoutControls() // Ensure layout controls are visible by default
         setDefaultLayout()
     }
 
@@ -97,7 +100,6 @@ class EditCollageActivity : Activity() {
         layoutControls = findViewById(R.id.layoutControls)
         backgroundControls = findViewById(R.id.backgroundControls)
         borderControls = findViewById(R.id.borderControls)
-        borderColorControls = findViewById(R.id.borderColorControls)
 
         borderWidthSeekBar = findViewById(R.id.borderWidthSeekBar)
         cornerRadiusSeekBar = findViewById(R.id.cornerRadiusSeekBar)
@@ -246,25 +248,74 @@ class EditCollageActivity : Activity() {
             else -> listOf()
         }
 
-        layouts.forEach { layout ->
-            val button = Button(this).apply {
-                text = layout.label
-                layoutParams = LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    1f
-                ).apply {
-                    setMargins(4, 4, 4, 4)
+        val horizontalLayout = LinearLayout(this@EditCollageActivity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            gravity = android.view.Gravity.CENTER
+        }
+
+        try {
+            layouts.forEachIndexed { index, layout ->
+                val optionLayout = LinearLayout(this@EditCollageActivity).apply {
+                    orientation = LinearLayout.VERTICAL
+                    gravity = android.view.Gravity.CENTER
+                    val margin = 16
+                    val params = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    params.setMargins(margin, margin, margin, margin)
+                    layoutParams = params
                 }
-                setOnClickListener {
+
+                val imageButton = ImageButton(this@EditCollageActivity)
+                val drawableId = when (index) {
+                    0 -> R.drawable.layout_style_1
+                    1 -> R.drawable.layout_style_2
+                    2 -> R.drawable.layout_style_3
+                    3 -> R.drawable.layout_style_4
+                    else -> R.drawable.layout_style_1
+                }
+                imageButton.setImageResource(drawableId)
+                imageButton.setBackgroundResource(android.R.color.transparent)
+                val imgParams = LinearLayout.LayoutParams(96, 96)
+                imageButton.layoutParams = imgParams
+                imageButton.scaleType = ImageView.ScaleType.FIT_CENTER
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    imageButton.elevation = 8f
+                }
+                imageButton.setOnClickListener {
                     spanCount = layout.spanCount
                     layoutType = layout.type
                     collageRecyclerView.layoutManager = GridLayoutManager(this@EditCollageActivity, spanCount)
                     adapter.setLayoutType(layout.type)
                 }
+
+                val label = TextView(layoutControls.context)
+                label.text = layout.label
+                label.setTextColor(Color.WHITE)
+                label.textSize = 14f
+                label.setPadding(0, 8, 0, 0)
+                label.setTypeface(label.typeface, android.graphics.Typeface.BOLD)
+                label.gravity = android.view.Gravity.CENTER
+                label.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+
+                optionLayout.addView(imageButton)
+                optionLayout.addView(label)
+                horizontalLayout.addView(optionLayout)
             }
-            layoutControls.addView(button)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this@EditCollageActivity, "Error creating layout controls: ${e.message}", Toast.LENGTH_LONG).show()
         }
+
+        layoutControls.addView(horizontalLayout)
     }
 
     private fun setDefaultLayout() {
@@ -307,6 +358,7 @@ class EditCollageActivity : Activity() {
 
     private fun setupClickListeners() {
         layoutButton.setOnClickListener {
+            setupLayoutControls()
             showLayoutControls()
         }
 
@@ -442,21 +494,18 @@ class EditCollageActivity : Activity() {
         layoutControls.visibility = View.VISIBLE
         backgroundControls.visibility = View.GONE
         borderControls.visibility = View.GONE
-        borderColorControls.visibility = View.GONE
     }
 
     private fun showBackgroundControls() {
         layoutControls.visibility = View.GONE
         backgroundControls.visibility = View.VISIBLE
         borderControls.visibility = View.GONE
-        borderColorControls.visibility = View.GONE
     }
 
     private fun showBorderControls() {
         layoutControls.visibility = View.GONE
         backgroundControls.visibility = View.GONE
         borderControls.visibility = View.VISIBLE
-        borderColorControls.visibility = View.VISIBLE
     }
 
     private fun createCollageBitmap(): Bitmap {
