@@ -2,14 +2,11 @@ package com.android.picmosaic
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -23,7 +20,6 @@ import java.io.FileOutputStream
 class ProfileActivity : Activity() {
     //Request code for picking an image
     private val PICK_IMAGE_REQUEST = 100
-    private val CAMERA_REQUEST = 101
 
     //-------Initializing stuff-------
     //Initialize the ViewFlipper
@@ -59,7 +55,6 @@ class ProfileActivity : Activity() {
     private var selectedImageUri: Uri? = null
     private lateinit var originalProfile: UserProfile
 
-    //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -73,8 +68,6 @@ class ProfileActivity : Activity() {
         setupButtonListeners()
     }
 
-    //-----------------S-O-M-E--C-O-M-P-L-I-C-A-T-E-D--S-T-U-F-F-----------------
-    //Initialize Views
     private fun initializeViews(){
         // Initialize ViewFlipper
         viewFlipper = findViewById(R.id.viewFlipper)
@@ -107,7 +100,6 @@ class ProfileActivity : Activity() {
         editProfilePictureButton = findViewById(R.id.edit_profile_picture)
     }
 
-    //Set upp button listeners
     private fun setupButtonListeners(){
         // Edit Profile Button - Switch to Edit View
         editProfileButton.setOnClickListener {
@@ -178,7 +170,6 @@ class ProfileActivity : Activity() {
     }
 
 
-    //Load the saved profile image
     private fun loadSavedProfileImage() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
@@ -200,7 +191,6 @@ class ProfileActivity : Activity() {
 
 
 
-    //Load the user profile data
     private fun loadProfileData() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         val email = sharedPreferences.getString("current_user_email", null) ?: return
@@ -226,7 +216,6 @@ class ProfileActivity : Activity() {
         cityEdit.setText(profile.city)
     }
 
-    // Save Profile Changes
     private fun saveProfileChanges() {
         val sharedPreferences = getSharedPreferences("PicMosaic", MODE_PRIVATE)
         val email = sharedPreferences.getString("current_user_email", null) ?: return showToast("Error: No user logged in")
@@ -256,20 +245,17 @@ class ProfileActivity : Activity() {
             .putString("user_first_name_$email", updatedProfile.firstName)
             .apply()
 
-        loadProfileData()  // ✅ Reload the saved profile
-        loadSavedProfileImage() // ✅ Reload the saved image
+        loadProfileData()
+        loadSavedProfileImage()
 
-        selectedImageUri = null // ✅ Clear selected image after saving
-        viewFlipper.showPrevious()  // ✅ Switch back to profile view
+        selectedImageUri = null
+        viewFlipper.showPrevious()
         showToast("Profile updated successfully")
     }
 
-    // Helper function for showing a toast
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-
-
 
     private fun copyImageToInternalStorage(uri: Uri, email: String): String? {
         return try {
@@ -281,7 +267,7 @@ class ProfileActivity : Activity() {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
                 }
 
-                file.absolutePath // Return saved file path
+                file.absolutePath
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -289,32 +275,25 @@ class ProfileActivity : Activity() {
         }
     }
 
-    // Only allow choosing from the gallery
     private fun showImagePickerDialog() {
-        openGallery() // Directly open gallery instead of showing a dialog
+        openGallery()
     }
 
-    //Show Discard Changes Dialog box
     private fun showDiscardChangesDialog(onConfirm: () -> Unit) {
         AlertDialog.Builder(this, R.style.CustomAlertDialog)
             .setTitle("Discard Changes")
             .setMessage("Are you sure you want to discard your changes?")
             .setPositiveButton("Yes") { _, _ ->
-                loadProfileData()  // ✅ Reload old profile details
-                loadSavedProfileImage()  // ✅ Reload old profile picture
-                selectedImageUri = null // ✅ Clear unsaved image selection
-                viewFlipper.showPrevious() // ✅ Switch back to profile view
-                onConfirm() // ✅ Call the function passed as a parameter
+                loadProfileData()
+                loadSavedProfileImage()
+                selectedImageUri = null
+                viewFlipper.showPrevious()
+                onConfirm()
             }
             .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
-
-
-
-
-    //Show Save Changes Dialog box
     private fun showSaveChangesDialog() {
         AlertDialog.Builder(this, R.style.CustomAlertDialog)
             .setTitle("Save Changes?")
@@ -324,7 +303,6 @@ class ProfileActivity : Activity() {
             .show()
     }
 
-    //Show Logout Dialog
     private fun showLogoutDialog() {
         val logoutDialog = LogoutDialog(this)
         logoutDialog.show()
@@ -355,7 +333,7 @@ class ProfileActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
             val imageUri = data?.data ?: return // If no image is selected, exit early
 
             selectedImageUri = imageUri // ✅ Store the image TEMPORARILY, not save yet
@@ -381,7 +359,7 @@ class ProfileActivity : Activity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
 
-        finish() // Close ProfileActivity
+        finish()
     }
 
 

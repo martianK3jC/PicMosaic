@@ -1,4 +1,4 @@
-package com.android.picmosaic.utils
+package com.android.picmosaic
 
 import android.app.Dialog
 import android.content.Context
@@ -6,10 +6,7 @@ import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.SeekBar
-import androidx.core.graphics.ColorUtils
-import com.android.picmosaic.R
 
 class ColorPickerDialog(context: Context, initialColor: Int, private val onColorSelected: (Int) -> Unit) : Dialog(context) {
 

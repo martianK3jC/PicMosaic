@@ -14,23 +14,16 @@ import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.picmosaic.utils.CollageConfig
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.android.picmosaic.utils.ColorPickerDialog
-import java.io.File
-import java.io.FileOutputStream
-import com.google.android.material.button.MaterialButton
 import android.widget.ImageView
 
 class EditCollageActivity : Activity() {
@@ -64,8 +57,6 @@ class EditCollageActivity : Activity() {
     private val COLLAGE_WIDTH = 1080
     private val COLLAGE_HEIGHT = 1080
     private val CROP_REQUEST_CODE = 1001
-
-    private var selectedLayoutType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -363,7 +354,6 @@ class EditCollageActivity : Activity() {
         }
 
         saveButton.setOnClickListener {
-            val collageBitmap = createCollageBitmap()
             navigateToSaveShareActivity()
         }
 
