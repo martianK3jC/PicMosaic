@@ -5,13 +5,11 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.RectF
 import android.media.MediaScannerConnection
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.widget.Button
@@ -247,7 +245,6 @@ class SaveShareActivity : Activity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                // If the file hasn’t been saved yet, save it with a temporary name
                 if (savedFile == null) {
                     savedFile = withContext(Dispatchers.IO) {
                         val fileName = "temp_collage_${System.currentTimeMillis()}.png"
@@ -363,7 +360,6 @@ class SaveShareActivity : Activity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                // If the file hasn’t been saved yet, save it with a temporary name
                 if (savedFile == null) {
                     savedFile = withContext(Dispatchers.IO) {
                         val fileName = "temp_collage_${System.currentTimeMillis()}.png"

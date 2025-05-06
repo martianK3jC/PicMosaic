@@ -2,12 +2,8 @@ package com.android.picmosaic
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Window
-import android.view.WindowManager
 import android.widget.Button
 
 class LogoutDialog(private val activity: Activity) : Dialog(activity) {
@@ -32,7 +28,5 @@ class LogoutDialog(private val activity: Activity) : Dialog(activity) {
             (activity as? ProfileActivity)?.handleLogout() // Call the function from ProfileActivity
             dismiss() // Close dialog
         }
-
-
     }
 }

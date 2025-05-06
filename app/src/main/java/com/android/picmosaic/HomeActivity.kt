@@ -3,7 +3,6 @@ package com.android.picmosaic
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 
@@ -19,7 +18,7 @@ class HomeActivity : Activity() {
         checkLoginStatus()
 
         val settingsButton = findViewById<ImageButton>(R.id.settingsButton)
-        val createCollageButton = findViewById<ImageButton>(R.id.create_collage_button) // Add this button to your layout
+        val createCollageButton = findViewById<ImageButton>(R.id.create_collage_button)
 
         settingsButton.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
