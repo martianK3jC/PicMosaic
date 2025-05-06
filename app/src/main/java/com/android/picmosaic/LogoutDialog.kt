@@ -12,6 +12,8 @@ import android.widget.Button
 
 class LogoutDialog(private val activity: Activity) : Dialog(activity) {
 
+    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
